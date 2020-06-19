@@ -19,14 +19,13 @@ final class HomeViewController: UIViewController {
 
         c.backgroundColor = .systemBackground
 
-        c.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(c)
-        NSLayoutConstraint.activate([
-            c.topAnchor.constraint(equalTo: view.topAnchor),
-            c.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            c.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            c.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
+        c.layout(on: view) { c, view in
+            c.leading == view.leading
+            c.trailing == view.trailing
+            c.top == view.top
+            c.bottom == view.bottom
+        }
 
         return c
     }()
@@ -45,10 +44,17 @@ final class HomeViewController: UIViewController {
                     for: indexPath
                 )
             case .square:
-                return collectionView.dequeueReusableCell(
+                let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: SquareCell.reuseID,
                     for: indexPath
+                ) as? ConfigurableCell & UICollectionViewCell
+                cell?.configure(with:
+                    .init(
+                        title: "Product \(UUID().uuidString)",
+                        subtitle: "$42"
+                    )
                 )
+                return cell
             }
         }
     }()
@@ -80,7 +86,7 @@ final class HomeViewController: UIViewController {
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.23), heightDimension: .fractionalWidth(0.23))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(120.0))
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.26))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
                 group.interItemSpacing = .flexible(8.0)
                 group.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20)
@@ -112,7 +118,6 @@ final class HomeViewController: UIViewController {
                     group.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20)
 
                     let section = NSCollectionLayoutSection(group: group)
-//                    section.interGroupSpacing = 0.0
                     return section
 
                 case .small:
@@ -231,16 +236,54 @@ struct Section: Hashable {
 
 let colors: [UIColor] = [.blue, .cyan, .darkGray, .gray, .green, .magenta, .purple, .red, .yellow]
 
+protocol ConfigurableCell {
+    func configure(with itemData: Item)
+}
+
 final class SquareCell: UICollectionViewCell {
     static let reuseID = "SquareCell"
 
+    private let titleLabel = UILabel()
+    private let subtitleLabel = UILabel()
+    private let imageView = UIImageView()
+    private let stackView = UIStackView()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = colors.randomElement()!
+
+        imageView.backgroundColor = colors.randomElement()!
+        
+        contentView.addSubview(imageView)
+        imageView.layout(on: contentView) { imageView, contentView in
+            imageView.leading == contentView.leading
+            imageView.trailing == contentView.trailing
+            imageView.top == contentView.top
+            imageView.bottom == contentView.bottom - 20.0
+        }
+
+        contentView.addSubview(stackView)
+        stackView.layout(on: contentView, otherView: imageView) { stackView, contentView, imageView in
+            stackView.top == imageView.bottom
+            stackView.leading == contentView.leading
+            stackView.trailing == contentView.trailing
+            imageView.bottom == contentView.bottom
+        }
+
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        [titleLabel, subtitleLabel].forEach(stackView.addArrangedSubview)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension SquareCell: ConfigurableCell {
+
+    func configure(with itemData: Item) {
+        titleLabel.text = itemData.title
+        subtitleLabel.text = itemData.subtitle
     }
 }
 
