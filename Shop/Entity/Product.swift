@@ -8,13 +8,10 @@
 
 import Foundation
 
-struct Product: Hashable {
-    let id = UUID()
-    let title: String
-    let subtitle: String
-
-    init(title: String = "", subtitle: String = "") {
-        self.title = title
-        self.subtitle = subtitle
-    }
+struct Product: Hashable, Decodable {
+    let id: String
+    let name: String
+    let price: String // TODO: Make into Int and decode
+    // TODO: imageURL not parsing
+    let imageURL: String = "" // This would normally be a URL, but is instead a string to represent an SFSymbol
 }

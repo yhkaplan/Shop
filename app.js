@@ -12,32 +12,38 @@ function sample(array) {
   return array[index]
 }
 
+const logger = (req, res, next) => {
+  console.log(`Request made to: ${req.url}`)
+  next()
+}
+app.use(logger)
+
 app.get('/home_content', (req, res) => {
   res.send({
     'sections': [
       {
-        'type': 'banners',
+        'kind': 'banner',
         'ab_test_set': 'a',
         'id': 0
       },
       {
-        'type': 'shortcuts',
+        'kind': 'shortcut',
         'ab_test_set': 'a',
         'id': 1
       },
       {
-        'type': 'featured_products',
+        'kind': 'featured_product',
         'title': faker.lorem.words(),
         'subtitle': faker.lorem.sentence(),
         'id': 2
       },
       {
-        'type': 'articles',
+        'kind': 'article',
         'title': 'Articles',
         'id': 3
       },
       {
-        'type': 'featured_products',
+        'kind': 'featured_product',
         'title': faker.lorem.words(),
         'subtitle': faker.lorem.sentence(),
         'id': 4

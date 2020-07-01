@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 let colors: [UIColor] = [.blue, .cyan, .darkGray, .gray, .green, .magenta, .purple, .red, .yellow]
 
@@ -53,7 +54,7 @@ final class HomeViewController: UIViewController {
                     withReuseIdentifier: ShortcutCell.reuseID,
                     for: indexPath
                 )
-            case .pickupProduct:
+            case .featuredProduct:
                 reuseID = ProductCell.reuseID
             case .article:
                 reuseID = ArticleCell.reuseID
@@ -67,13 +68,17 @@ final class HomeViewController: UIViewController {
             ) as? ConfigurableCell & UICollectionViewCell
             cell?.configure(with:
                 .init(
-                    title: "Product \(UUID().uuidString)",
-                    subtitle: "$42"
+                    id: "8",
+                    name: "Product \(UUID().uuidString)",
+                    price: "42"
                 )
             )
             return cell
         }
     }()
+
+    private let apiClient = APIClient()
+    private var cancellables = Set<AnyCancellable>()
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -84,10 +89,11 @@ final class HomeViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        addData()
+        downloadData()
     }
 
     func makeCollectionViewLayout() -> UICollectionViewLayout {
@@ -122,7 +128,7 @@ final class HomeViewController: UIViewController {
                 section.orthogonalScrollingBehavior = .paging
                 return section
 
-            case .pickupProduct:
+            case .featuredProduct:
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.3), heightDimension: .fractionalWidth(0.4))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
@@ -149,60 +155,35 @@ final class HomeViewController: UIViewController {
         }
     }
 
-    func addData() {
-        let sections: [Section] = [
-            .init(kind: .banner, title: "Squares", subtitle: "", items: [
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-            ]),
-            .init(
-                kind: .shortcut,
-                title: "Circles",
-                subtitle: "",
-                items: [
-                    .product(.init(title: "a", subtitle: "a")),
-                    .product(.init(title: "a", subtitle: "a")),
-                    .product(.init(title: "a", subtitle: "a")),
-                    .product(.init(title: "a", subtitle: "a")),
-                ]
-            ),
-            .init(kind: .pickupProduct, title: "Squares", subtitle: "", items: [
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-            ]),
-            .init(kind: .article, title: "Squares", subtitle: "", items: [
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-            ]),
-            .init(kind: .pickupProduct, title: "Squares", subtitle: "", items: [
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-                .product(.init(title: "a", subtitle: "a")),
-            ]),
-        ]
-
+    func downloadData() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
-        snapshot.appendSections(sections)
-        sections.forEach { snapshot.appendItems($0.items, toSection: $0) }
-        dataSource.apply(snapshot, animatingDifferences: true)
+        snapshot.appendSections([])
+        dataSource.apply(snapshot, animatingDifferences: false)
+
+        apiClient.request(endpoint: GETHomeContentEndpoint())
+            .print()
+            .sink(receiveCompletion: {error in}, receiveValue: { [weak self] homeSections in
+                guard let self = self else { return }
+                homeSections.sections.forEach { section in
+                    switch section.kind {
+                    case .article, .featuredProduct, .shortcut, .banner:
+                        self.apiClient.request(endpoint: GETFeaturedProductsEndpoint(id: section.id))
+                            .print()
+                            .receive(on: DispatchQueue.main) // Runloop.main?
+                            .sink(receiveCompletion: {error in}, receiveValue: { products in
+                                let sections: [Section] = [.init(kind: .featuredProduct, items: products.products.map { .product($0) })]
+                                var snapshot = self.dataSource.snapshot()
+                                // TODO use Combine to map these? self.dataSource.publisher(for: )
+                                snapshot.appendSections(sections)
+                                sections.forEach { snapshot.appendItems($0.items, toSection: $0) }
+                                self.dataSource.apply(snapshot, animatingDifferences: true)
+                            })
+                            .store(in: &self.cancellables)
+                    }
+                }
+            })
+            .store(in: &cancellables)
+
     }
 }
 
@@ -217,23 +198,16 @@ extension HomeViewController {
 
     struct Section: Hashable {
         let id = UUID()
-        let kind: Kind
-        let title: String
-        let subtitle: String
+        let kind: HomeSectionKind
+        let title: String?
+        let subtitle: String?
         let items: [Item]
 
-        init(kind: Kind, title: String = "", subtitle: String = "", items: [Item]) {
+        init(kind: HomeSectionKind, title: String = "", subtitle: String = "", items: [Item]) {
             self.kind = kind
             self.title = title
             self.subtitle = subtitle
             self.items = items
-        }
-
-        enum Kind: Hashable {
-            case banner
-            case shortcut
-            case pickupProduct
-            case article
         }
     }
 

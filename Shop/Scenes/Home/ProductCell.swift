@@ -59,7 +59,7 @@ final class ProductCell: UICollectionViewCell {
 extension ProductCell: ConfigurableCell {
 
     func configure(with itemData: Product) {
-        titleLabel.text = itemData.title
-        subtitleLabel.text = itemData.subtitle
+        titleLabel.text = itemData.name
+        subtitleLabel.text = "$\(itemData.price)"
     }
 }
