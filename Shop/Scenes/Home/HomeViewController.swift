@@ -14,10 +14,10 @@ final class HomeViewController: UIViewController {
         let c = UICollectionView(frame: view.bounds, collectionViewLayout: makeCollectionViewLayout())
 
         c.delegate = self
-        c.register(CircleCell.self, forCellWithReuseIdentifier: CircleCell.reuseID)
-        c.register(SmallSquareCell.self, forCellWithReuseIdentifier: SmallSquareCell.reuseID)
-        c.register(MediumSquareCell.self, forCellWithReuseIdentifier: MediumSquareCell.reuseID)
-        c.register(LargeSquareCell.self, forCellWithReuseIdentifier: LargeSquareCell.reuseID)
+        c.register(ShortcutCell.self, forCellWithReuseIdentifier: ShortcutCell.reuseID)
+        c.register(ArticleCell.self, forCellWithReuseIdentifier: ArticleCell.reuseID)
+        c.register(ProductCell.self, forCellWithReuseIdentifier: ProductCell.reuseID)
+        c.register(BannerCell.self, forCellWithReuseIdentifier: BannerCell.reuseID)
 
         c.backgroundColor = .systemBackground
 
@@ -32,7 +32,7 @@ final class HomeViewController: UIViewController {
         return c
     }()
 
-    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
+    private lazy var dataSource: UICollectionViewDiffableDataSource<ProductSection, Product> = {
         .init(collectionView: collectionView) { [weak self] collectionView, indexPath, item in
             guard let self = self else { return nil }
 
@@ -42,18 +42,18 @@ final class HomeViewController: UIViewController {
             switch sectionKind {
             case .circle:
                 return collectionView.dequeueReusableCell(
-                    withReuseIdentifier: CircleCell.reuseID,
+                    withReuseIdentifier: ShortcutCell.reuseID,
                     for: indexPath
                 )
             case .square(let squareKind):
                 let reuseID: String
                 switch squareKind {
                 case .small:
-                    reuseID = SmallSquareCell.reuseID
+                    reuseID = ArticleCell.reuseID
                 case .medium:
-                    reuseID = MediumSquareCell.reuseID
+                    reuseID = ProductCell.reuseID
                 case .large:
-                    reuseID = LargeSquareCell.reuseID
+                    reuseID = BannerCell.reuseID
                 }
                 let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: reuseID,
@@ -148,56 +148,56 @@ final class HomeViewController: UIViewController {
     }
 
     func addData() {
-        let sections: [Section] = [
+        let sections: [ProductSection] = [
             .init(kind: .square(.large), title: "Squares", subtitle: "", items: [
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
             ]),
             .init(
                 kind: .circle(.normal),
                 title: "Circles",
                 subtitle: "",
                 items: [
-                    Item(title: "a", subtitle: "a"),
-                    Item(title: "a", subtitle: "a"),
-                    Item(title: "a", subtitle: "a"),
-                    Item(title: "a", subtitle: "a"),
+                    Product(title: "a", subtitle: "a"),
+                    Product(title: "a", subtitle: "a"),
+                    Product(title: "a", subtitle: "a"),
+                    Product(title: "a", subtitle: "a"),
                 ]
             ),
             .init(kind: .square(.medium), title: "Squares", subtitle: "", items: [
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
             ]),
             .init(kind: .square(.small), title: "Squares", subtitle: "", items: [
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
             ]),
             .init(kind: .square(.medium), title: "Squares", subtitle: "", items: [
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
-                Item(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
+                Product(title: "a", subtitle: "a"),
             ]),
         ]
 
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        var snapshot = NSDiffableDataSourceSnapshot<ProductSection, Product>()
         snapshot.appendSections(sections)
         sections.forEach { snapshot.appendItems($0.items, toSection: $0) }
         dataSource.apply(snapshot, animatingDifferences: true)
@@ -209,26 +209,15 @@ extension HomeViewController: UICollectionViewDelegate {
 
 }
 
-
-// TODO: replace w/ original code
-struct Item: Hashable {
-    let id = UUID()
-    let title: String
-    let subtitle: String
-
-    init(title: String = "", subtitle: String = "") {
-        self.title = title
-        self.subtitle = subtitle
-    }
-}
-struct Section: Hashable {
+// TODO: Handle heterogenous content w/ enum HomeContentKind { case product(Product), case banner(Banner) }
+struct ProductSection: Hashable {
     let id = UUID()
     let kind: Kind
     let title: String
     let subtitle: String
-    let items: [Item]
+    let items: [Product]
 
-    init(kind: Kind, title: String = "", subtitle: String = "", items: [Item] = []) {
+    init(kind: Kind, title: String = "", subtitle: String = "", items: [Product] = []) {
         self.kind = kind
         self.title = title
         self.subtitle = subtitle
@@ -247,164 +236,5 @@ struct Section: Hashable {
 let colors: [UIColor] = [.blue, .cyan, .darkGray, .gray, .green, .magenta, .purple, .red, .yellow]
 
 protocol ConfigurableCell {
-    func configure(with itemData: Item)
-}
-
-extension UILabel {
-    func setDynamicFont(to style: UIFont.TextStyle) {
-        font = .preferredFont(forTextStyle: style)
-        adjustsFontForContentSizeCategory = true
-    }
-}
-
-final class LargeSquareCell: UICollectionViewCell {
-    static let reuseID = "LargeSquareCell"
-    private let imageView = UIImageView()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        imageView.backgroundColor = colors.randomElement()!
-
-        contentView.addSubview(imageView)
-        imageView.layout(on: contentView) { imageView, contentView in
-            imageView.leading == contentView.leading
-            imageView.trailing == contentView.trailing
-            imageView.top == contentView.top
-            imageView.bottom == contentView.bottom
-        }
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-extension LargeSquareCell: ConfigurableCell {
-    func configure(with itemData: Item) {}
-}
-final class MediumSquareCell: UICollectionViewCell {
-    static let reuseID = "MediumSquareCell"
-
-    private let titleLabel = UILabel()
-    private let subtitleLabel = UILabel()
-    private let imageView = UIImageView()
-    private let stackView = UIStackView()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        titleLabel.textColor = .label
-        titleLabel.setDynamicFont(to: .caption1)
-        subtitleLabel.textColor = .secondaryLabel
-        subtitleLabel.setDynamicFont(to: .caption2)
-
-        imageView.backgroundColor = colors.randomElement()!
-        imageView.layer.cornerRadius = 2.0
-        imageView.clipsToBounds = true
-
-        contentView.addSubview(imageView)
-        imageView.layout(on: contentView) { imageView, contentView in
-            imageView.leading <= contentView.leading
-            imageView.trailing <= contentView.trailing
-            imageView.top == contentView.top
-            imageView.height == imageView.width
-            imageView.centerX == contentView.centerX
-        }
-
-        stackView.distribution = .fillProportionally
-        contentView.addSubview(stackView)
-        stackView.layout(on: contentView, otherView: imageView) { stackView, contentView, imageView in
-            stackView.top == imageView.bottom + 4.0
-            stackView.leading == contentView.leading
-            stackView.trailing == contentView.trailing
-            stackView.bottom == contentView.bottom
-        }
-
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        [titleLabel, subtitleLabel].forEach(stackView.addArrangedSubview)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-extension MediumSquareCell: ConfigurableCell {
-
-    func configure(with itemData: Item) {
-        titleLabel.text = itemData.title
-        subtitleLabel.text = itemData.subtitle
-    }
-}
-
-final class SmallSquareCell: UICollectionViewCell {
-    static let reuseID = "SmallSquareCell"
-
-    private let titleLabel = UILabel()
-    private let subtitleLabel = UILabel()
-    private let imageView = UIImageView()
-    private let stackView = UIStackView()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        titleLabel.textColor = .label
-        titleLabel.setDynamicFont(to: .caption1)
-        subtitleLabel.textColor = .secondaryLabel
-        subtitleLabel.setDynamicFont(to: .caption2)
-
-        imageView.backgroundColor = colors.randomElement()!
-        imageView.layer.cornerRadius = 2.0
-        imageView.clipsToBounds = true
-
-        contentView.addSubview(imageView)
-        imageView.layout(on: contentView) { imageView, contentView in
-            imageView.leading == contentView.leading
-            imageView.top <= contentView.top
-            imageView.bottom <= contentView.bottom
-            imageView.width == imageView.height
-            imageView.centerY == contentView.centerY
-        }
-
-        contentView.addSubview(stackView)
-        stackView.layout(on: contentView, otherView: imageView) { stackView, contentView, imageView in
-            stackView.top == contentView.top
-            stackView.leading == imageView.trailing + 4.0
-            stackView.trailing == contentView.trailing
-            stackView.bottom == contentView.bottom
-        }
-
-        stackView.axis = .vertical
-        stackView.alignment = .leading
-        stackView.distribution = .fillEqually
-        [titleLabel, subtitleLabel].forEach(stackView.addArrangedSubview)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-extension SmallSquareCell: ConfigurableCell {
-
-    func configure(with itemData: Item) {
-        titleLabel.text = itemData.title
-        subtitleLabel.text = itemData.subtitle
-    }
-}
-final class CircleCell: UICollectionViewCell {
-    static let reuseID = "CircleCell"
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = colors.randomElement()!
-        layer.cornerRadius = bounds.width / 2.0
-        clipsToBounds = true
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    func configure(with itemData: Product)
 }
