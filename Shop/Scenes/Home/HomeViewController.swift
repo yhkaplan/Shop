@@ -15,7 +15,9 @@ final class HomeViewController: UIViewController {
 
         c.delegate = self
         c.register(CircleCell.self, forCellWithReuseIdentifier: CircleCell.reuseID)
-        c.register(SquareCell.self, forCellWithReuseIdentifier: SquareCell.reuseID)
+        c.register(SmallSquareCell.self, forCellWithReuseIdentifier: SmallSquareCell.reuseID)
+        c.register(MediumSquareCell.self, forCellWithReuseIdentifier: MediumSquareCell.reuseID)
+        c.register(LargeSquareCell.self, forCellWithReuseIdentifier: LargeSquareCell.reuseID)
 
         c.backgroundColor = .systemBackground
 
@@ -38,14 +40,23 @@ final class HomeViewController: UIViewController {
             let sectionKind = snapshot.sectionIdentifiers[indexPath.section].kind
 
             switch sectionKind {
-            case .circle(let circleType):
+            case .circle:
                 return collectionView.dequeueReusableCell(
                     withReuseIdentifier: CircleCell.reuseID,
                     for: indexPath
                 )
-            case .square:
+            case .square(let squareKind):
+                let reuseID: String
+                switch squareKind {
+                case .small:
+                    reuseID = SmallSquareCell.reuseID
+                case .medium:
+                    reuseID = MediumSquareCell.reuseID
+                case .large:
+                    reuseID = LargeSquareCell.reuseID
+                }
                 let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: SquareCell.reuseID,
+                    withReuseIdentifier: reuseID,
                     for: indexPath
                 ) as? ConfigurableCell & UICollectionViewCell
                 cell?.configure(with:
@@ -109,10 +120,10 @@ final class HomeViewController: UIViewController {
                     return section
 
                 case .medium:
-                    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.3), heightDimension: .fractionalWidth(0.3))
+                    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.3), heightDimension: .fractionalWidth(0.4))
                     let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-                    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(140))
+                    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.18))
                     let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
                     group.interItemSpacing = .flexible(8.0)
                     group.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20)
@@ -121,16 +132,15 @@ final class HomeViewController: UIViewController {
                     return section
 
                 case .small:
-                    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.15), heightDimension: .fractionalWidth(0.15))
+                    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.3))
                     let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-                    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(90))
+                    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.25))
                     let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
                     group.interItemSpacing = .flexible(8.0)
-                    group.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
 
                     let section = NSCollectionLayoutSection(group: group)
-                    //                    section.interGroupSpacing = 0.0
+                    section.contentInsets = NSDirectionalEdgeInsets(top: 30, leading: 20, bottom: 10, trailing: 20)
                     return section
                 }
             }
@@ -240,8 +250,41 @@ protocol ConfigurableCell {
     func configure(with itemData: Item)
 }
 
-final class SquareCell: UICollectionViewCell {
-    static let reuseID = "SquareCell"
+extension UILabel {
+    func setDynamicFont(to style: UIFont.TextStyle) {
+        font = .preferredFont(forTextStyle: style)
+        adjustsFontForContentSizeCategory = true
+    }
+}
+
+final class LargeSquareCell: UICollectionViewCell {
+    static let reuseID = "LargeSquareCell"
+    private let imageView = UIImageView()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        imageView.backgroundColor = colors.randomElement()!
+
+        contentView.addSubview(imageView)
+        imageView.layout(on: contentView) { imageView, contentView in
+            imageView.leading == contentView.leading
+            imageView.trailing == contentView.trailing
+            imageView.top == contentView.top
+            imageView.bottom == contentView.bottom
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension LargeSquareCell: ConfigurableCell {
+    func configure(with itemData: Item) {}
+}
+final class MediumSquareCell: UICollectionViewCell {
+    static let reuseID = "MediumSquareCell"
 
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
@@ -251,22 +294,31 @@ final class SquareCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
+        titleLabel.textColor = .label
+        titleLabel.setDynamicFont(to: .caption1)
+        subtitleLabel.textColor = .secondaryLabel
+        subtitleLabel.setDynamicFont(to: .caption2)
+
         imageView.backgroundColor = colors.randomElement()!
-        
+        imageView.layer.cornerRadius = 2.0
+        imageView.clipsToBounds = true
+
         contentView.addSubview(imageView)
         imageView.layout(on: contentView) { imageView, contentView in
-            imageView.leading == contentView.leading
-            imageView.trailing == contentView.trailing
+            imageView.leading <= contentView.leading
+            imageView.trailing <= contentView.trailing
             imageView.top == contentView.top
-            imageView.bottom == contentView.bottom - 20.0
+            imageView.height == imageView.width
+            imageView.centerX == contentView.centerX
         }
 
+        stackView.distribution = .fillProportionally
         contentView.addSubview(stackView)
         stackView.layout(on: contentView, otherView: imageView) { stackView, contentView, imageView in
-            stackView.top == imageView.bottom
+            stackView.top == imageView.bottom + 4.0
             stackView.leading == contentView.leading
             stackView.trailing == contentView.trailing
-            imageView.bottom == contentView.bottom
+            stackView.bottom == contentView.bottom
         }
 
         stackView.axis = .vertical
@@ -279,7 +331,7 @@ final class SquareCell: UICollectionViewCell {
     }
 }
 
-extension SquareCell: ConfigurableCell {
+extension MediumSquareCell: ConfigurableCell {
 
     func configure(with itemData: Item) {
         titleLabel.text = itemData.title
@@ -287,6 +339,61 @@ extension SquareCell: ConfigurableCell {
     }
 }
 
+final class SmallSquareCell: UICollectionViewCell {
+    static let reuseID = "SmallSquareCell"
+
+    private let titleLabel = UILabel()
+    private let subtitleLabel = UILabel()
+    private let imageView = UIImageView()
+    private let stackView = UIStackView()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        titleLabel.textColor = .label
+        titleLabel.setDynamicFont(to: .caption1)
+        subtitleLabel.textColor = .secondaryLabel
+        subtitleLabel.setDynamicFont(to: .caption2)
+
+        imageView.backgroundColor = colors.randomElement()!
+        imageView.layer.cornerRadius = 2.0
+        imageView.clipsToBounds = true
+
+        contentView.addSubview(imageView)
+        imageView.layout(on: contentView) { imageView, contentView in
+            imageView.leading == contentView.leading
+            imageView.top <= contentView.top
+            imageView.bottom <= contentView.bottom
+            imageView.width == imageView.height
+            imageView.centerY == contentView.centerY
+        }
+
+        contentView.addSubview(stackView)
+        stackView.layout(on: contentView, otherView: imageView) { stackView, contentView, imageView in
+            stackView.top == contentView.top
+            stackView.leading == imageView.trailing + 4.0
+            stackView.trailing == contentView.trailing
+            stackView.bottom == contentView.bottom
+        }
+
+        stackView.axis = .vertical
+        stackView.alignment = .leading
+        stackView.distribution = .fillEqually
+        [titleLabel, subtitleLabel].forEach(stackView.addArrangedSubview)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension SmallSquareCell: ConfigurableCell {
+
+    func configure(with itemData: Item) {
+        titleLabel.text = itemData.title
+        subtitleLabel.text = itemData.subtitle
+    }
+}
 final class CircleCell: UICollectionViewCell {
     static let reuseID = "CircleCell"
 
