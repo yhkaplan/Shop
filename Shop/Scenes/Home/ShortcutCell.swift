@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class ShortcutCell: UICollectionViewCell {
+final class ShortcutCell: UICollectionViewCell, ConfigurableCell {
     static let reuseID = "ShortcutCell"
 
     override init(frame: CGRect) {
@@ -21,4 +21,6 @@ final class ShortcutCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    func configure(with data: Shortcut) {}
 }

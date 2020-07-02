@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class ArticleCell: UICollectionViewCell {
+final class ArticleCell: UICollectionViewCell, ConfigurableCell {
     static let reuseID = "ArticleCell"
 
     private let titleLabel = UILabel()
@@ -56,9 +56,9 @@ final class ArticleCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(with article: Article) {
-        titleLabel.text = article.title
-        subtitleLabel.text = article.subtitle
-        imageView.image = UIImage(systemName: article.imageURL)
+    func configure(with data: Article) {
+        titleLabel.text = data.title
+        subtitleLabel.text = data.subtitle
+        imageView.image = UIImage(systemName: data.imageURL)
     }
 }

@@ -17,10 +17,10 @@ final class HomeViewController: UIViewController {
         let c = UICollectionView(frame: view.bounds, collectionViewLayout: makeCollectionViewLayout())
 
         c.delegate = self
-        c.register(ShortcutCell.self, forCellWithReuseIdentifier: ShortcutCell.reuseID)
-        c.register(ArticleCell.self, forCellWithReuseIdentifier: ArticleCell.reuseID)
-        c.register(ProductCell.self, forCellWithReuseIdentifier: ProductCell.reuseID)
-        c.register(BannerCell.self, forCellWithReuseIdentifier: BannerCell.reuseID)
+        c.register(ShortcutCell.self)
+        c.register(ArticleCell.self)
+        c.register(ProductCell.self)
+        c.register(BannerCell.self)
 
         c.backgroundColor = .systemBackground
 
@@ -42,39 +42,22 @@ final class HomeViewController: UIViewController {
             let snapshot = self.dataSource.snapshot()
             let sectionKind = snapshot.sectionIdentifiers[indexPath.section].kind
 
-            // TODO: think of a more generic approach
             switch sectionKind {
             case .shortcut:
-                return collectionView.dequeueReusableCell(
-                    withReuseIdentifier: ShortcutCell.reuseID,
-                    for: indexPath
-                )
+                guard case let .shortcut(shortcut) = item else { return nil }
+                return collectionView.configureReusableCell(ShortcutCell.self, data: shortcut, for: indexPath)
+
             case .featuredProduct:
-                let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: ProductCell.reuseID,
-                    for: indexPath
-                    ) as? ProductCell
                 guard case let .product(product) = item else { return nil }
-                cell?.configure(with: product)
-                return cell
+                return collectionView.configureReusableCell(ProductCell.self, data: product, for: indexPath)
 
             case .article:
-                let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: ArticleCell.reuseID,
-                    for: indexPath
-                    ) as? ArticleCell
                 guard case let .article(article) = item else { return nil }
-                cell?.configure(with: article)
-                return cell
+                return collectionView.configureReusableCell(ArticleCell.self, data: article, for: indexPath)
 
             case .banner:
-                let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: BannerCell.reuseID,
-                    for: indexPath
-                ) as? BannerCell
                 guard case let .banner(banner) = item else { return nil }
-                cell?.configure(with: banner)
-                return cell
+                return collectionView.configureReusableCell(BannerCell.self, data: banner, for: indexPath)
             }
         }
     }()
@@ -213,7 +196,7 @@ extension HomeViewController: UICollectionViewDelegate {
 
 extension HomeViewController {
 
-    enum Item: Hashable { case product(Product), article(Article), banner(Banner) }
+    enum Item: Hashable { case product(Product), article(Article), banner(Banner), shortcut(Shortcut) }
 
     struct Section: Hashable, Decodable {
         let id: Int // TODO: make ID type-safe

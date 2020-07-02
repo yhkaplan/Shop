@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class BannerCell: UICollectionViewCell {
+final class BannerCell: UICollectionViewCell, ConfigurableCell {
     static let reuseID = "BannerCell"
     private let imageView = UIImageView()
 
@@ -30,7 +30,7 @@ final class BannerCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(with banner: Banner) {
-        imageView.image = UIImage(systemName: banner.imageURL)
+    func configure(with data: Banner) {
+        imageView.image = UIImage(systemName: data.imageURL)
     }
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class ProductCell: UICollectionViewCell {
+final class ProductCell: UICollectionViewCell, ConfigurableCell {
     static let reuseID = "ProductCell"
 
     private let productNameLabel = UILabel()
@@ -58,10 +58,10 @@ final class ProductCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(with product: Product) {
-        productNameLabel.text = product.name
-        priceLabel.text = product.formattedPrice
+    func configure(with data: Product) {
+        productNameLabel.text = data.name
+        priceLabel.text = data.formattedPrice
         // This is obviously not an appropriate way to handle images and is just for demo purposes
-        imageView.image = UIImage(systemName: product.imageURL)
+        imageView.image = UIImage(systemName: data.imageURL)
     }
 }
