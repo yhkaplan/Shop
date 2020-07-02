@@ -14,7 +14,7 @@ protocol ConfigurableCell {
     func configure(with data: Data)
 }
 extension UICollectionView {
-    func register<Cell: ConfigurableCell & UICollectionViewCell>(_ type: Cell.Type) {
+    func registerCell<Cell: ConfigurableCell & UICollectionViewCell>(_ type: Cell.Type) {
         register(type.self, forCellWithReuseIdentifier: type.reuseID)
     }
 

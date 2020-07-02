@@ -17,10 +17,12 @@ final class HomeViewController: UIViewController {
         let c = UICollectionView(frame: view.bounds, collectionViewLayout: makeCollectionViewLayout())
 
         c.delegate = self
-        c.register(ShortcutCell.self)
-        c.register(ArticleCell.self)
-        c.register(ProductCell.self)
-        c.register(BannerCell.self)
+        c.registerCell(ShortcutCell.self)
+        c.registerCell(ArticleCell.self)
+        c.registerCell(ProductCell.self)
+        c.registerCell(BannerCell.self)
+
+        c.register(HeaderView.self, forSupplementaryViewOfKind: HeaderView.kind, withReuseIdentifier: HeaderView.reuseID)
 
         c.backgroundColor = .systemBackground
 
@@ -85,6 +87,18 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
 
         collectionView.refreshControl = refreshControl
+        dataSource.supplementaryViewProvider = { [weak self] view, kind, indexPath in
+            guard let strongSelf = self else { return nil }
+            let header = self?.collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: HeaderView.reuseID,
+                for: indexPath
+            ) as? HeaderView
+            let section = strongSelf.dataSource.snapshot().sectionIdentifiers[indexPath.section]
+            header?.configure(with: (title: section.title, subtitle: section.subtitle))
+
+            return header
+        }
         downloadData()
     }
 
@@ -113,10 +127,10 @@ final class HomeViewController: UIViewController {
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(100))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
                 group.interItemSpacing = .flexible(8.0)
-                group.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20)
 
                 let section = NSCollectionLayoutSection(group: group)
                 section.interGroupSpacing = 0.0
+                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
                 return section
 
             case .banner:
@@ -141,6 +155,18 @@ final class HomeViewController: UIViewController {
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
                 section.interGroupSpacing = 10
+
+
+                let header = NSCollectionLayoutBoundarySupplementaryItem(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .estimated(50.0)
+                    ),
+                    elementKind: HeaderView.kind,
+                    alignment: .top
+                )
+                section.boundarySupplementaryItems = [header]
+
                 return section
 
             case .article:
@@ -152,7 +178,7 @@ final class HomeViewController: UIViewController {
                 group.interItemSpacing = .flexible(8.0)
 
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = NSDirectionalEdgeInsets(top: 30, leading: 20, bottom: 10, trailing: 20)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 30, leading: 20, bottom: 20, trailing: 20)
                 return section
             }
         }
