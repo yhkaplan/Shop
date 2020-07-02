@@ -62,6 +62,11 @@ final class HomeViewController: UIViewController {
         }
     }()
 
+    private lazy var refreshControl: UIRefreshControl = {
+        let r = UIRefreshControl()
+        r.addTarget(self, action: #selector(refreshAll), for: .valueChanged)
+        return r
+    }()
     private let apiClient = APIClient()
     private var cancellables = Set<AnyCancellable>()
 
@@ -75,13 +80,22 @@ final class HomeViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        collectionView.refreshControl = refreshControl
         downloadData()
     }
 
-    func makeCollectionViewLayout() -> UICollectionViewLayout {
+    @objc private func refreshAll() {
+        var snapshot = self.dataSource.snapshot()
+        snapshot.deleteAllItems()
+        dataSource.apply(snapshot)
+        downloadData()
+    }
+
+    private func makeCollectionViewLayout() -> UICollectionViewLayout {
         UICollectionViewCompositionalLayout { [weak self] sectionIndex, environment in
             guard let self = self else { return nil }
 
@@ -143,7 +157,7 @@ final class HomeViewController: UIViewController {
         }
     }
 
-    func downloadData() { // TODO: move all this to separate class unaware of DiffableDataSources and testable
+    private func downloadData() { // TODO: move all this to separate class unaware of DiffableDataSources and testable
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections([]) // Initialize snapshot TODO: needed?
         dataSource.apply(snapshot, animatingDifferences: true)
@@ -155,6 +169,8 @@ final class HomeViewController: UIViewController {
                 var snapshot = strongSelf.dataSource.snapshot()
                 snapshot.appendSections(homeSections.sections)
                 strongSelf.dataSource.apply(snapshot, animatingDifferences: true) { // Only modify snapshot when finished
+                    strongSelf.refreshControl.endRefreshing()
+
                     homeSections.sections.forEach { section in
                         switch section.kind {
                         case .article:
