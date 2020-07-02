@@ -9,8 +9,6 @@
 import UIKit
 import Combine
 
-let colors: [UIColor] = [.blue, .cyan, .darkGray, .gray, .green, .magenta, .purple, .red, .yellow]
-
 final class HomeViewController: UIViewController {
 
     private lazy var collectionView: UICollectionView = {

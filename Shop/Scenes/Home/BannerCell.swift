@@ -16,6 +16,7 @@ final class BannerCell: UICollectionViewCell, ConfigurableCell {
         super.init(frame: frame)
 
         imageView.contentMode = .scaleAspectFit
+        imageView.backgroundColor = .systemGray6
 
         contentView.addSubview(imageView)
         imageView.layout(on: contentView) { imageView, contentView in
@@ -32,6 +33,7 @@ final class BannerCell: UICollectionViewCell, ConfigurableCell {
     }
 
     func configure(with data: Banner) {
-        imageView.image = UIImage(systemName: data.imageURL)
+        imageView.image = UIImage(systemName: data.imageURL)?
+            .withTintColor(.systemGray, renderingMode: .alwaysOriginal)
     }
 }

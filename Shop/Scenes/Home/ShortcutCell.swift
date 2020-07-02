@@ -17,7 +17,7 @@ final class ShortcutCell: UICollectionViewCell, ConfigurableCell {
         layer.cornerRadius = bounds.width / 2.0
         clipsToBounds = true
 
-        imageView.backgroundColor = colors.randomElement()!
+        imageView.backgroundColor = .systemGray6
         imageView.contentMode = .scaleAspectFit
 
         contentView.addSubview(imageView)
@@ -35,6 +35,7 @@ final class ShortcutCell: UICollectionViewCell, ConfigurableCell {
     }
 
     func configure(with data: Shortcut) {
-        imageView.image = UIImage(systemName: data.imageURL)
+        imageView.image = UIImage(systemName: data.imageURL)?
+            .withTintColor(.systemGray, renderingMode: .alwaysOriginal)
     }
 }

@@ -29,7 +29,7 @@ final class ProductCell: UICollectionViewCell, ConfigurableCell {
         imageView.layer.cornerRadius = 2.0
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFit
-        imageView.backgroundColor = colors.randomElement()!
+        imageView.backgroundColor = .systemGray6
 
         contentView.addSubview(imageView)
         imageView.layout(on: contentView) { imageView, contentView in
@@ -63,6 +63,7 @@ final class ProductCell: UICollectionViewCell, ConfigurableCell {
         productNameLabel.text = data.name
         priceLabel.text = data.formattedPrice
         // This is obviously not an appropriate way to handle images and is just for demo purposes
-        imageView.image = UIImage(systemName: data.imageURL)
+        imageView.image = UIImage(systemName: data.imageURL)?
+            .withTintColor(.systemGray, renderingMode: .alwaysOriginal)
     }
 }
