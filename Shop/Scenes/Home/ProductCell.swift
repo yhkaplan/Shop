@@ -11,22 +11,24 @@ import UIKit
 final class ProductCell: UICollectionViewCell {
     static let reuseID = "ProductCell"
 
-    private let titleLabel = UILabel()
-    private let subtitleLabel = UILabel()
+    private let productNameLabel = UILabel()
+    private let priceLabel = UILabel()
     private let imageView = UIImageView()
     private let stackView = UIStackView()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        titleLabel.textColor = .label
-        titleLabel.setDynamicFont(to: .caption1)
-        subtitleLabel.textColor = .secondaryLabel
-        subtitleLabel.setDynamicFont(to: .caption2)
+        productNameLabel.textColor = .label
+        productNameLabel.setDynamicFont(to: .caption1)
+        productNameLabel.numberOfLines = 2
+        productNameLabel.textAlignment = .center
+        priceLabel.textColor = .secondaryLabel
+        priceLabel.setDynamicFont(to: .caption2)
 
-        imageView.backgroundColor = colors.randomElement()!
         imageView.layer.cornerRadius = 2.0
         imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFit
 
         contentView.addSubview(imageView)
         imageView.layout(on: contentView) { imageView, contentView in
@@ -48,7 +50,7 @@ final class ProductCell: UICollectionViewCell {
 
         stackView.axis = .vertical
         stackView.alignment = .center
-        [titleLabel, subtitleLabel].forEach(stackView.addArrangedSubview)
+        [productNameLabel, priceLabel].forEach(stackView.addArrangedSubview)
     }
 
     required init?(coder: NSCoder) {
@@ -59,7 +61,9 @@ final class ProductCell: UICollectionViewCell {
 extension ProductCell: ConfigurableCell {
 
     func configure(with itemData: Product) {
-        titleLabel.text = itemData.name
-        subtitleLabel.text = "$\(itemData.price)"
+        productNameLabel.text = itemData.name
+        priceLabel.text = itemData.formattedPrice
+        // This is obviously not an appropriate way to handle images and is just for demo purposes
+        imageView.image = UIImage(systemName: itemData.imageURL)
     }
 }

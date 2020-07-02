@@ -66,13 +66,9 @@ final class HomeViewController: UIViewController {
                 withReuseIdentifier: reuseID,
                 for: indexPath
             ) as? ConfigurableCell & UICollectionViewCell
-            cell?.configure(with:
-                .init(
-                    id: "8",
-                    name: "Product \(UUID().uuidString)",
-                    price: "42"
-                )
-            )
+            guard case .product(let product) = item else { return nil }
+
+            cell?.configure(with: product)
             return cell
         }
     }()
@@ -129,10 +125,10 @@ final class HomeViewController: UIViewController {
                 return section
 
             case .featuredProduct:
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.3), heightDimension: .fractionalWidth(0.4))
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.3), heightDimension: .fractionalWidth(0.45))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.18))
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.2))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
                 group.interItemSpacing = .flexible(8.0)
                 group.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20)
