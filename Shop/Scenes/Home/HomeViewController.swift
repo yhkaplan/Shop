@@ -11,10 +11,6 @@ import Combine
 
 let colors: [UIColor] = [.blue, .cyan, .darkGray, .gray, .green, .magenta, .purple, .red, .yellow]
 
-protocol ConfigurableCell {
-    func configure(with itemData: Product)
-}
-
 final class HomeViewController: UIViewController {
 
     private lazy var collectionView: UICollectionView = {
@@ -107,9 +103,12 @@ final class HomeViewController: UIViewController {
             guard let self = self else { return nil }
 
             let snapshot = self.dataSource.snapshot()
-            let sectionKind = snapshot.sectionIdentifiers[sectionIndex].kind
+            let section = snapshot.sectionIdentifiers[sectionIndex]
 
-            switch sectionKind {
+            let sectionIsEmpty = snapshot.numberOfItems(inSection: section) == 0
+            if sectionIsEmpty { return nil }
+
+            switch section.kind { // TODO: provide zero height layout while loading
             case .shortcut:
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.23), heightDimension: .fractionalWidth(0.23))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -163,44 +162,42 @@ final class HomeViewController: UIViewController {
 
     func downloadData() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
-        snapshot.appendSections([])
-        dataSource.apply(snapshot, animatingDifferences: false)
+        snapshot.appendSections([]) // Initialize snapshot TODO: needed?
+        dataSource.apply(snapshot, animatingDifferences: true)
 
         apiClient.request(endpoint: GETHomeContentEndpoint())
             .print()
+            .receive(on: DispatchQueue.main) // Runloop.main?
             .sink(receiveCompletion: {error in}, receiveValue: { [weak self] homeSections in
-                guard let self = self else { return }
-                homeSections.sections.forEach { section in
-                    switch section.kind {
-                    case .article:
+                guard let strongSelf = self else { return }
+                var snapshot = strongSelf.dataSource.snapshot()
+                snapshot.appendSections(homeSections.sections)
+                strongSelf.dataSource.apply(snapshot, animatingDifferences: true) { // Only modify snapshot when finished
+                    homeSections.sections.forEach { section in
+                        switch section.kind {
+                        case .article:
+                            strongSelf.apiClient.request(endpoint: GETArticlesEndpoint(id: section.id))
+                                .receive(on: DispatchQueue.main) // Runloop.main?
+                                .sink(receiveCompletion: {error in}, receiveValue: { articles in
+                                    let items: [Item] = articles.articles.map { .article($0) }
+                                    var snapshot = strongSelf.dataSource.snapshot()
+                                    snapshot.appendItems(items, toSection: section)
+                                    strongSelf.dataSource.apply(snapshot)
+                                })
+                                .store(in: &strongSelf.cancellables)
 
-                        self.apiClient.request(endpoint: GETArticlesEndpoint(id: section.id))
-                            .print()
-                            .receive(on: DispatchQueue.main) // Runloop.main?
-                            .sink(receiveCompletion: {error in}, receiveValue: { articles in
-                                let sections: [Section] = [.init(kind: .article, items: articles.articles.map { .article($0) })]
-                                var snapshot = self.dataSource.snapshot()
-                                // TODO use Combine to map these? self.dataSource.publisher(for: )
-                                snapshot.appendSections(sections)
-                                sections.forEach { snapshot.appendItems($0.items, toSection: $0) }
-                                self.dataSource.apply(snapshot, animatingDifferences: true)
-                            })
-                            .store(in: &self.cancellables)
-
-                    case .featuredProduct, .shortcut, .banner:
-
-                        self.apiClient.request(endpoint: GETFeaturedProductsEndpoint(id: section.id))
-                            .print()
-                            .receive(on: DispatchQueue.main) // Runloop.main?
-                            .sink(receiveCompletion: {error in}, receiveValue: { products in
-                                let sections: [Section] = [.init(kind: .featuredProduct, items: products.products.map { .product($0) })]
-                                var snapshot = self.dataSource.snapshot()
-                                // TODO use Combine to map these? self.dataSource.publisher(for: )
-                                snapshot.appendSections(sections)
-                                sections.forEach { snapshot.appendItems($0.items, toSection: $0) }
-                                self.dataSource.apply(snapshot, animatingDifferences: true)
-                            })
-                            .store(in: &self.cancellables)
+                        case .featuredProduct:
+                            strongSelf.apiClient.request(endpoint: GETFeaturedProductsEndpoint(id: section.id))
+                                .receive(on: DispatchQueue.main) // Runloop.main?
+                                .sink(receiveCompletion: {error in}, receiveValue: { products in
+                                    let items: [Item] = products.products.map { .product($0) }
+                                    var snapshot = strongSelf.dataSource.snapshot()
+                                    snapshot.appendItems(items, toSection: section)
+                                    strongSelf.dataSource.apply(snapshot)
+                                })
+                                .store(in: &strongSelf.cancellables)
+                        case .shortcut, .banner: break
+                        }
                     }
                 }
             })
@@ -218,19 +215,30 @@ extension HomeViewController {
 
     enum Item: Hashable { case product(Product), article(Article), banner(Banner) }
 
-    struct Section: Hashable {
-        let id = UUID()
-        let kind: HomeSectionKind
+    struct Section: Hashable, Decodable {
+        let id: Int // TODO: make ID type-safe
+        let kind: Kind
         let title: String?
         let subtitle: String?
-        let items: [Item]
 
-        init(kind: HomeSectionKind, title: String = "", subtitle: String = "", items: [Item]) {
-            self.kind = kind
-            self.title = title
-            self.subtitle = subtitle
-            self.items = items
+        enum Kind: String, Hashable {
+            case banner, shortcut, article
+            case featuredProduct = "featured_product"
         }
     }
+}
 
+extension HomeViewController.Section: Comparable {
+    static func < (lhs: Self, rhs: Self) -> Bool {
+        return lhs.id < rhs.id
+    }
+}
+
+extension HomeViewController.Section.Kind: Decodable {
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawString = try container.decode(String.self)
+        guard let kind = Self(rawValue: rawString) else { throw DecoderError.cannotParse }
+        self = kind
+    }
 }

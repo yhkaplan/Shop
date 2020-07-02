@@ -9,7 +9,7 @@
 import Foundation
 
 struct GETHomeContentEndpoint: Endpoint {
-    struct Success: Decodable { let sections: [HomeSection] }
+    struct Success: Decodable { let sections: [HomeViewController.Section] }
     let path = "/home_content"
 }
 
