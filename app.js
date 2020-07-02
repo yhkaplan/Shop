@@ -47,6 +47,18 @@ app.get('/home_content', (req, res) => {
         'title': faker.lorem.words(),
         'subtitle': faker.lorem.sentence(),
         'id': 4
+      },
+      {
+        'kind': 'featured_product',
+        'title': faker.lorem.words(),
+        'subtitle': faker.lorem.sentence(),
+        'id': 5
+      },
+      {
+        'kind': 'featured_product',
+        'title': faker.lorem.words(),
+        'subtitle': faker.lorem.sentence(),
+        'id': 4
       }
     ]
   })
