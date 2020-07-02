@@ -54,6 +54,7 @@ final class ProductCell: UICollectionViewCell, ConfigurableCell {
         [productNameLabel, priceLabel].forEach(stackView.addArrangedSubview)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

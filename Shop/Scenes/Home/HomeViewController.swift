@@ -69,11 +69,11 @@ final class HomeViewController: UIViewController {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
 
     }
-    
+
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -143,13 +143,12 @@ final class HomeViewController: UIViewController {
         }
     }
 
-    func downloadData() {
+    func downloadData() { // TODO: move all this to separate class unaware of DiffableDataSources and testable
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections([]) // Initialize snapshot TODO: needed?
         dataSource.apply(snapshot, animatingDifferences: true)
 
         apiClient.request(endpoint: GETHomeContentEndpoint())
-            .print()
             .receive(on: DispatchQueue.main) // Runloop.main?
             .sink(receiveCompletion: {error in}, receiveValue: { [weak self] homeSections in
                 guard let strongSelf = self else { return }
@@ -179,7 +178,26 @@ final class HomeViewController: UIViewController {
                                     strongSelf.dataSource.apply(snapshot)
                                 })
                                 .store(in: &strongSelf.cancellables)
-                        case .shortcut, .banner: break
+                        case .shortcut:
+                            strongSelf.apiClient.request(endpoint: GETShortcutsEndpoint(id: section.id))
+                                .receive(on: DispatchQueue.main) // Runloop.main?
+                                .sink(receiveCompletion: {error in}, receiveValue: { shortcuts in
+                                    let items: [Item] = shortcuts.shortcuts.map { .shortcut($0) }
+                                    var snapshot = strongSelf.dataSource.snapshot()
+                                    snapshot.appendItems(items, toSection: section)
+                                    strongSelf.dataSource.apply(snapshot)
+                                })
+                                .store(in: &strongSelf.cancellables)
+                        case .banner:
+                            strongSelf.apiClient.request(endpoint: GETBannersEndpoint(id: section.id))
+                                .receive(on: DispatchQueue.main) // Runloop.main?
+                                .sink(receiveCompletion: {error in}, receiveValue: { banners in
+                                    let items: [Item] = banners.banners.map { .banner($0) }
+                                    var snapshot = strongSelf.dataSource.snapshot()
+                                    snapshot.appendItems(items, toSection: section)
+                                    strongSelf.dataSource.apply(snapshot)
+                                })
+                                .store(in: &strongSelf.cancellables)
                         }
                     }
                 }
