@@ -46,8 +46,7 @@ final class HomeViewController: UIViewController {
             let snapshot = self.dataSource.snapshot()
             let sectionKind = snapshot.sectionIdentifiers[indexPath.section].kind
 
-            let reuseID: String
-
+            // TODO: think of a more generic approach
             switch sectionKind {
             case .shortcut:
                 return collectionView.dequeueReusableCell(
@@ -55,21 +54,32 @@ final class HomeViewController: UIViewController {
                     for: indexPath
                 )
             case .featuredProduct:
-                reuseID = ProductCell.reuseID
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: ProductCell.reuseID,
+                    for: indexPath
+                    ) as? ProductCell
+                guard case let .product(product) = item else { return nil }
+                cell?.configure(with: product)
+                return cell
+
             case .article:
-                reuseID = ArticleCell.reuseID
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: ArticleCell.reuseID,
+                    for: indexPath
+                    ) as? ArticleCell
+                guard case let .article(article) = item else { return nil }
+                cell?.configure(with: article)
+                return cell
+
             case .banner:
-                reuseID = BannerCell.reuseID
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: BannerCell.reuseID,
+                    for: indexPath
+                ) as? BannerCell
+                guard case let .banner(banner) = item else { return nil }
+                cell?.configure(with: banner)
+                return cell
             }
-
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: reuseID,
-                for: indexPath
-            ) as? ConfigurableCell & UICollectionViewCell
-            guard case .product(let product) = item else { return nil }
-
-            cell?.configure(with: product)
-            return cell
         }
     }()
 
@@ -162,7 +172,23 @@ final class HomeViewController: UIViewController {
                 guard let self = self else { return }
                 homeSections.sections.forEach { section in
                     switch section.kind {
-                    case .article, .featuredProduct, .shortcut, .banner:
+                    case .article:
+
+                        self.apiClient.request(endpoint: GETArticlesEndpoint(id: section.id))
+                            .print()
+                            .receive(on: DispatchQueue.main) // Runloop.main?
+                            .sink(receiveCompletion: {error in}, receiveValue: { articles in
+                                let sections: [Section] = [.init(kind: .article, items: articles.articles.map { .article($0) })]
+                                var snapshot = self.dataSource.snapshot()
+                                // TODO use Combine to map these? self.dataSource.publisher(for: )
+                                snapshot.appendSections(sections)
+                                sections.forEach { snapshot.appendItems($0.items, toSection: $0) }
+                                self.dataSource.apply(snapshot, animatingDifferences: true)
+                            })
+                            .store(in: &self.cancellables)
+
+                    case .featuredProduct, .shortcut, .banner:
+
                         self.apiClient.request(endpoint: GETFeaturedProductsEndpoint(id: section.id))
                             .print()
                             .receive(on: DispatchQueue.main) // Runloop.main?
@@ -190,7 +216,7 @@ extension HomeViewController: UICollectionViewDelegate {
 
 extension HomeViewController {
 
-    enum Item: Hashable { case product(Product) }
+    enum Item: Hashable { case product(Product), article(Article), banner(Banner) }
 
     struct Section: Hashable {
         let id = UUID()

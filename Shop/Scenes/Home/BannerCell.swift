@@ -15,7 +15,7 @@ final class BannerCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        imageView.backgroundColor = colors.randomElement()!
+        imageView.contentMode = .scaleAspectFit
 
         contentView.addSubview(imageView)
         imageView.layout(on: contentView) { imageView, contentView in
@@ -29,8 +29,8 @@ final class BannerCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
-extension BannerCell: ConfigurableCell {
-    func configure(with itemData: Product) {}
+    func configure(with banner: Banner) {
+        imageView.image = UIImage(systemName: banner.imageURL)
+    }
 }

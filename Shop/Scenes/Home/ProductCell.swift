@@ -29,6 +29,7 @@ final class ProductCell: UICollectionViewCell {
         imageView.layer.cornerRadius = 2.0
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFit
+        imageView.backgroundColor = colors.randomElement()!
 
         contentView.addSubview(imageView)
         imageView.layout(on: contentView) { imageView, contentView in
@@ -56,14 +57,11 @@ final class ProductCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
-extension ProductCell: ConfigurableCell {
-
-    func configure(with itemData: Product) {
-        productNameLabel.text = itemData.name
-        priceLabel.text = itemData.formattedPrice
+    func configure(with product: Product) {
+        productNameLabel.text = product.name
+        priceLabel.text = product.formattedPrice
         // This is obviously not an appropriate way to handle images and is just for demo purposes
-        imageView.image = UIImage(systemName: itemData.imageURL)
+        imageView.image = UIImage(systemName: product.imageURL)
     }
 }

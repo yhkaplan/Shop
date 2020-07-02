@@ -23,6 +23,7 @@ final class ArticleCell: UICollectionViewCell {
         titleLabel.setDynamicFont(to: .caption1)
         subtitleLabel.textColor = .secondaryLabel
         subtitleLabel.setDynamicFont(to: .caption2)
+        subtitleLabel.numberOfLines = 2
 
         imageView.backgroundColor = colors.randomElement()!
         imageView.layer.cornerRadius = 2.0
@@ -54,12 +55,10 @@ final class ArticleCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
-extension ArticleCell: ConfigurableCell {
-
-    func configure(with itemData: Product) {
-        titleLabel.text = itemData.name
-        subtitleLabel.text = "$\(itemData.price)"
+    func configure(with article: Article) {
+        titleLabel.text = article.title
+        subtitleLabel.text = article.subtitle
+        imageView.image = UIImage(systemName: article.imageURL)
     }
 }
