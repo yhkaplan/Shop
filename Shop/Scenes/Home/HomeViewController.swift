@@ -80,9 +80,27 @@ final class HomeViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    private let viewModel = HomeViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        viewModel.$sections
+            .sink { [weak self] sections in
+                guard let strongSelf = self else { return }
+
+                // recreating snapshot because ViewModel.sections becomes single source of truth
+                var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+                snapshot.appendSections(Array(sections.keys.sorted(by: <)))
+                for (section, items) in sections {
+                    snapshot.appendItems(items, toSection: section)
+                }
+
+                strongSelf.dataSource.apply(snapshot, animatingDifferences: true) { } // TODO: do simultaneous updates crash if on main thread?
+            }
+            .store(in: &cancellables)
+
+        viewModel.viewDidLoad()
 
         collectionView.refreshControl = refreshControl
         dataSource.supplementaryViewProvider = { [weak self] view, kind, indexPath in
@@ -97,14 +115,13 @@ final class HomeViewController: UIViewController {
 
             return header
         }
-        downloadData()
     }
 
     @objc private func refreshAll() {
         var snapshot = self.dataSource.snapshot()
         snapshot.deleteAllItems()
         dataSource.apply(snapshot)
-        downloadData()
+        viewModel.pullToRefreshGestureDidRecognize()
     }
 
     private func makeCollectionViewLayout() -> UICollectionViewLayout {
@@ -182,70 +199,6 @@ final class HomeViewController: UIViewController {
         }
     }
 
-    private func downloadData() { // TODO: move all this to separate class unaware of DiffableDataSources and testable
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
-        snapshot.appendSections([]) // Initialize snapshot TODO: needed?
-        dataSource.apply(snapshot, animatingDifferences: true)
-
-        apiClient.request(endpoint: GETHomeContentEndpoint())
-            .receive(on: DispatchQueue.main) // Runloop.main?
-            .sink(receiveCompletion: {error in}, receiveValue: { [weak self] homeSections in
-                guard let strongSelf = self else { return }
-                var snapshot = strongSelf.dataSource.snapshot()
-                snapshot.appendSections(homeSections.sections)
-                strongSelf.dataSource.apply(snapshot, animatingDifferences: true) { // Only modify snapshot when finished
-                    strongSelf.refreshControl.endRefreshing()
-
-                    homeSections.sections.forEach { section in
-                        switch section.kind {
-                        case .article:
-                            strongSelf.apiClient.request(endpoint: GETArticlesEndpoint(id: section.id))
-                                .receive(on: DispatchQueue.main) // Runloop.main?
-                                .sink(receiveCompletion: {error in}, receiveValue: { articles in
-                                    let items: [Item] = articles.articles.map { .article($0) }
-                                    var snapshot = strongSelf.dataSource.snapshot()
-                                    snapshot.appendItems(items, toSection: section)
-                                    strongSelf.dataSource.apply(snapshot)
-                                })
-                                .store(in: &strongSelf.cancellables)
-
-                        case .featuredProduct:
-                            strongSelf.apiClient.request(endpoint: GETFeaturedProductsEndpoint(id: section.id))
-                                .receive(on: DispatchQueue.main) // Runloop.main?
-                                .sink(receiveCompletion: {error in}, receiveValue: { products in
-                                    let items: [Item] = products.products.map { .product($0) }
-                                    var snapshot = strongSelf.dataSource.snapshot()
-                                    snapshot.appendItems(items, toSection: section)
-                                    strongSelf.dataSource.apply(snapshot)
-                                })
-                                .store(in: &strongSelf.cancellables)
-                        case .shortcut:
-                            strongSelf.apiClient.request(endpoint: GETShortcutsEndpoint(id: section.id))
-                                .receive(on: DispatchQueue.main) // Runloop.main?
-                                .sink(receiveCompletion: {error in}, receiveValue: { shortcuts in
-                                    let items: [Item] = shortcuts.shortcuts.map { .shortcut($0) }
-                                    var snapshot = strongSelf.dataSource.snapshot()
-                                    snapshot.appendItems(items, toSection: section)
-                                    strongSelf.dataSource.apply(snapshot)
-                                })
-                                .store(in: &strongSelf.cancellables)
-                        case .banner:
-                            strongSelf.apiClient.request(endpoint: GETBannersEndpoint(id: section.id))
-                                .receive(on: DispatchQueue.main) // Runloop.main?
-                                .sink(receiveCompletion: {error in}, receiveValue: { banners in
-                                    let items: [Item] = banners.banners.map { .banner($0) }
-                                    var snapshot = strongSelf.dataSource.snapshot()
-                                    snapshot.appendItems(items, toSection: section)
-                                    strongSelf.dataSource.apply(snapshot)
-                                })
-                                .store(in: &strongSelf.cancellables)
-                        }
-                    }
-                }
-            })
-            .store(in: &cancellables)
-
-    }
 }
 
 // TODO: make separate DelegateAdaptor class conform and use closure or combine-based API
