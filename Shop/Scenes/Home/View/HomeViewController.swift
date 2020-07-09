@@ -9,7 +9,7 @@
 import UIKit
 import Combine
 
-final class HomeViewController: UIViewController {
+final class HomeViewController: UIViewController, Transitionable {
 
     private lazy var collectionView: UICollectionView = {
         let c = UICollectionView(frame: view.bounds, collectionViewLayout: makeCollectionViewLayout())
@@ -67,11 +67,16 @@ final class HomeViewController: UIViewController {
         r.addTarget(self, action: #selector(refreshAll), for: .valueChanged)
         return r
     }()
-    private let apiClient = APIClient()
-    private var cancellables = Set<AnyCancellable>()
 
-    init(viewModel: HomeViewModel) {
-        self.viewModel = viewModel
+    private var cancellables = Set<AnyCancellable>()
+    private let store: Store<HomeState, HomeAction, HomeEnvironment> // TODO: having this here in addition to ViewModel.store is a terrible idea
+    private lazy var viewModel: HomeViewModel = {
+        let router = HomeRouter(viewController: self)
+        return HomeViewModel(store: store, router: router)
+    }()
+
+    init(store: Store<HomeState, HomeAction, HomeEnvironment>) {
+        self.store = store
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -79,8 +84,6 @@ final class HomeViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    private let viewModel: HomeViewModel
 
     private func updateSections(_ sections: [Section : [Item]]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
@@ -106,11 +109,6 @@ final class HomeViewController: UIViewController {
                 strongSelf.updateSections(state.sections)
                 if !state.isRefreshControlAnimating {
                     strongSelf.refreshControl.endRefreshing()
-                }
-
-                if case let .presented(product) = state.productDetailScreenIsPresented {
-                    let productDetailView = ProductDetailView(product: product)
-                    strongSelf.navigationController?.pushView(productDetailView)
                 }
             }
             .store(in: &cancellables)

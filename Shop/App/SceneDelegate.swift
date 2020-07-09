@@ -28,8 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 reducer: homeReducer,
                 environment: HomeEnvironment()
             )
-            let viewModel = HomeViewModel(store: store)
-            let homeVC = HomeViewController(viewModel: viewModel)
+            let homeVC = HomeViewController(store: store)
             let navController = UINavigationController(rootViewController: homeVC)
             window.rootViewController = navController
             // UIHostingController(rootView: contentView)

@@ -22,17 +22,6 @@ func homeReducer(state: inout HomeState, action: HomeAction, environment: HomeEn
         state.sections = sections
         return Just(HomeAction.setRefreshControl(isAnimating: false)).eraseToAnyPublisher()
 
-    case let .didTapCell(section, item):
-        let section = state.sections.keys.sorted(by: <)[section]
-        let item = state.sections[section]?[item]
-
-        switch item {
-        case .product(let product):
-            state.productDetailScreenIsPresented = .presented(product)
-
-        default: fatalError() // TODO: 
-        }
-
     case .loadItemData(let sections):
         return environment.homeService.sectionItemsPublisher(sections: sections)
             .replaceError(with: [:])
