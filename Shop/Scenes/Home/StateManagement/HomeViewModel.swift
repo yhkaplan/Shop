@@ -25,4 +25,9 @@ final class HomeViewModel {
     func pullToRefreshGestureDidRecognize() {
         store.send(.loadSectionData)
     }
+
+    func didTapCell(section: Int, item: Int) {
+        // call Router here or use Redux
+        store.send(.didTapCell(section: section, item: item))
+    }
 }

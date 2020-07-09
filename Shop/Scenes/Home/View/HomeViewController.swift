@@ -95,6 +95,8 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "Awesome Shop"
+
         viewModel.statePublisher
             .sink { [weak self] state in
                 guard let strongSelf = self else { return }
@@ -104,6 +106,11 @@ final class HomeViewController: UIViewController {
                 strongSelf.updateSections(state.sections)
                 if !state.isRefreshControlAnimating {
                     strongSelf.refreshControl.endRefreshing()
+                }
+
+                if case let .presented(product) = state.productDetailScreenIsPresented {
+                    let productDetailView = ProductDetailView(product: product)
+                    strongSelf.navigationController?.pushView(productDetailView)
                 }
             }
             .store(in: &cancellables)
@@ -211,6 +218,10 @@ final class HomeViewController: UIViewController {
 
 // TODO: make separate DelegateAdaptor class conform and use closure or combine-based API
 extension HomeViewController: UICollectionViewDelegate {
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.didTapCell(section: indexPath.section, item: indexPath.item)
+    }
 
 }
 

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0359984D249CC61400254A7F /* Autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359984C249CC61400254A7F /* Autolayout.swift */; };
 		035D77DB24B7165E00FBC200 /* ProductDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77DA24B7165E00FBC200 /* ProductDetailView.swift */; };
+		035D77DD24B7193F00FBC200 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77DC24B7193F00FBC200 /* UINavigationController.swift */; };
 		03A96A0024B6B06C00781A6A /* Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A969FF24B6B06C00781A6A /* Combine.swift */; };
 		03A96A0324B6B0ED00781A6A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0224B6B0ED00781A6A /* Store.swift */; };
 		03A96A0524B6B13300781A6A /* Reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0424B6B13300781A6A /* Reducer.swift */; };
@@ -45,6 +46,7 @@
 /* Begin PBXFileReference section */
 		0359984C249CC61400254A7F /* Autolayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Autolayout.swift; sourceTree = "<group>"; };
 		035D77DA24B7165E00FBC200 /* ProductDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailView.swift; sourceTree = "<group>"; };
+		035D77DC24B7193F00FBC200 /* UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationController.swift; sourceTree = "<group>"; };
 		03A969FF24B6B06C00781A6A /* Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Combine.swift; sourceTree = "<group>"; };
 		03A96A0224B6B0ED00781A6A /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		03A96A0424B6B13300781A6A /* Reducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reducer.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 				03AEA1DA24AC4006003A5714 /* UILabel.swift */,
 				03AEA1F424ADB6F8003A5714 /* UICollectionView.swift */,
 				03A969FF24B6B06C00781A6A /* Combine.swift */,
+				035D77DC24B7193F00FBC200 /* UINavigationController.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -351,6 +354,7 @@
 				03AEA1F024AD7F52003A5714 /* Endpoint.swift in Sources */,
 				03A96A0D24B6B2A900781A6A /* HomeEnvironment.swift in Sources */,
 				03AEA1F224AD7F8B003A5714 /* Endpoints.swift in Sources */,
+				035D77DD24B7193F00FBC200 /* UINavigationController.swift in Sources */,
 				03AEA1DD24AC407A003A5714 /* ShortcutCell.swift in Sources */,
 				03AEA1F524ADB6F8003A5714 /* UICollectionView.swift in Sources */,
 			);

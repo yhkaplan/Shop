@@ -29,7 +29,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 environment: HomeEnvironment()
             )
             let viewModel = HomeViewModel(store: store)
-            window.rootViewController = HomeViewController(viewModel: viewModel)
+            let homeVC = HomeViewController(viewModel: viewModel)
+            let navController = UINavigationController(rootViewController: homeVC)
+            window.rootViewController = navController
             // UIHostingController(rootView: contentView)
             self.window = window
             window.makeKeyAndVisible()
