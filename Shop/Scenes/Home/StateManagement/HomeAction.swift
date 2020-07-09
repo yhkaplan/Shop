@@ -12,5 +12,6 @@ enum HomeAction {
     case loadSectionData
     case loadItemData(sections: [HomeViewController.Section])
     case setRefreshControl(isAnimating: Bool)
+    case didTapCell(section: Int, item: Int)
     case setSections(sections: [HomeViewController.Section: [HomeViewController.Item]])
 }
