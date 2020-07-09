@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		0359984D249CC61400254A7F /* Autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359984C249CC61400254A7F /* Autolayout.swift */; };
+		03A96A0024B6B06C00781A6A /* Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A969FF24B6B06C00781A6A /* Combine.swift */; };
+		03A96A0324B6B0ED00781A6A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0224B6B0ED00781A6A /* Store.swift */; };
+		03A96A0524B6B13300781A6A /* Reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0424B6B13300781A6A /* Reducer.swift */; };
+		03A96A0724B6B1CF00781A6A /* HomeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0624B6B1CF00781A6A /* HomeState.swift */; };
+		03A96A0924B6B20400781A6A /* HomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0824B6B20400781A6A /* HomeService.swift */; };
+		03A96A0D24B6B2A900781A6A /* HomeEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0C24B6B2A900781A6A /* HomeEnvironment.swift */; };
+		03A96A0F24B6B2C700781A6A /* HomeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0E24B6B2C700781A6A /* HomeAction.swift */; };
+		03A96A1124B6B2E900781A6A /* HomeReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A1024B6B2E900781A6A /* HomeReducer.swift */; };
 		03AEA1D524AC3ED4003A5714 /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AEA1D424AC3ED4003A5714 /* ProductCell.swift */; };
 		03AEA1D724AC3F36003A5714 /* BannerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AEA1D624AC3F36003A5714 /* BannerCell.swift */; };
 		03AEA1D924AC3F9A003A5714 /* ArticleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AEA1D824AC3F9A003A5714 /* ArticleCell.swift */; };
@@ -35,6 +43,14 @@
 
 /* Begin PBXFileReference section */
 		0359984C249CC61400254A7F /* Autolayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Autolayout.swift; sourceTree = "<group>"; };
+		03A969FF24B6B06C00781A6A /* Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Combine.swift; sourceTree = "<group>"; };
+		03A96A0224B6B0ED00781A6A /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		03A96A0424B6B13300781A6A /* Reducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reducer.swift; sourceTree = "<group>"; };
+		03A96A0624B6B1CF00781A6A /* HomeState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeState.swift; sourceTree = "<group>"; };
+		03A96A0824B6B20400781A6A /* HomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeService.swift; sourceTree = "<group>"; };
+		03A96A0C24B6B2A900781A6A /* HomeEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEnvironment.swift; sourceTree = "<group>"; };
+		03A96A0E24B6B2C700781A6A /* HomeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAction.swift; sourceTree = "<group>"; };
+		03A96A1024B6B2E900781A6A /* HomeReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeReducer.swift; sourceTree = "<group>"; };
 		03AEA1D424AC3ED4003A5714 /* ProductCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
 		03AEA1D624AC3F36003A5714 /* BannerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerCell.swift; sourceTree = "<group>"; };
 		03AEA1D824AC3F9A003A5714 /* ArticleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleCell.swift; sourceTree = "<group>"; };
@@ -89,6 +105,40 @@
 			path = Scenes;
 			sourceTree = "<group>";
 		};
+		03A96A0124B6B0D800781A6A /* Architecture */ = {
+			isa = PBXGroup;
+			children = (
+				03A96A0224B6B0ED00781A6A /* Store.swift */,
+				03A96A0424B6B13300781A6A /* Reducer.swift */,
+			);
+			path = Architecture;
+			sourceTree = "<group>";
+		};
+		03A96A0A24B6B25800781A6A /* View */ = {
+			isa = PBXGroup;
+			children = (
+				03E767EE249B6EE4002B3901 /* HomeViewController.swift */,
+				03AEA1D624AC3F36003A5714 /* BannerCell.swift */,
+				03AEA1D424AC3ED4003A5714 /* ProductCell.swift */,
+				03AEA1DC24AC407A003A5714 /* ShortcutCell.swift */,
+				03AEA1D824AC3F9A003A5714 /* ArticleCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		03A96A0B24B6B27600781A6A /* StateManagement */ = {
+			isa = PBXGroup;
+			children = (
+				03AEA1F924ADDEEF003A5714 /* HomeViewModel.swift */,
+				03A96A0624B6B1CF00781A6A /* HomeState.swift */,
+				03A96A0824B6B20400781A6A /* HomeService.swift */,
+				03A96A0C24B6B2A900781A6A /* HomeEnvironment.swift */,
+				03A96A0E24B6B2C700781A6A /* HomeAction.swift */,
+				03A96A1024B6B2E900781A6A /* HomeReducer.swift */,
+			);
+			path = StateManagement;
+			sourceTree = "<group>";
+		};
 		03AEA1DE24AC4109003A5714 /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -101,12 +151,11 @@
 		03AEA1DF24AC4157003A5714 /* Entity */ = {
 			isa = PBXGroup;
 			children = (
-				03AEA1E024AC52D1003A5714 /* Product.swift */,
 				03AEA1E524AC9BCE003A5714 /* DecoderError.swift */,
+				03AEA1E024AC52D1003A5714 /* Product.swift */,
 				03AEA1E724AD7E30003A5714 /* Shortcut.swift */,
 				03AEA1E924AD7E84003A5714 /* Article.swift */,
 				03AEA1EB24AD7EDE003A5714 /* Banner.swift */,
-				03AEA1F124AD7F8B003A5714 /* Endpoints.swift */,
 			);
 			path = Entity;
 			sourceTree = "<group>";
@@ -117,6 +166,7 @@
 				03AEA1E324AC88CF003A5714 /* APIClient.swift */,
 				03AEA1ED24AD7F48003A5714 /* HTTPMethod.swift */,
 				03AEA1EF24AD7F52003A5714 /* Endpoint.swift */,
+				03AEA1F124AD7F8B003A5714 /* Endpoints.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -126,6 +176,7 @@
 			children = (
 				03AEA1DA24AC4006003A5714 /* UILabel.swift */,
 				03AEA1F424ADB6F8003A5714 /* UICollectionView.swift */,
+				03A969FF24B6B06C00781A6A /* Combine.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -157,6 +208,7 @@
 		03E767D9249B6AFC002B3901 /* Shop */ = {
 			isa = PBXGroup;
 			children = (
+				03A96A0124B6B0D800781A6A /* Architecture */,
 				03AEA1F624ADC949003A5714 /* SharedComponents */,
 				03AEA1F324ADB6D5003A5714 /* Extensions */,
 				03AEA1E224AC88C0003A5714 /* Network */,
@@ -183,12 +235,8 @@
 		03E767F0249B6EED002B3901 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				03E767EE249B6EE4002B3901 /* HomeViewController.swift */,
-				03AEA1F924ADDEEF003A5714 /* HomeViewModel.swift */,
-				03AEA1D424AC3ED4003A5714 /* ProductCell.swift */,
-				03AEA1D624AC3F36003A5714 /* BannerCell.swift */,
-				03AEA1D824AC3F9A003A5714 /* ArticleCell.swift */,
-				03AEA1DC24AC407A003A5714 /* ShortcutCell.swift */,
+				03A96A0B24B6B27600781A6A /* StateManagement */,
+				03A96A0A24B6B25800781A6A /* View */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -265,11 +313,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				03AEA1EA24AD7E84003A5714 /* Article.swift in Sources */,
+				03A96A0024B6B06C00781A6A /* Combine.swift in Sources */,
+				03A96A0524B6B13300781A6A /* Reducer.swift in Sources */,
 				03AEA1D724AC3F36003A5714 /* BannerCell.swift in Sources */,
 				03AEA1EC24AD7EDE003A5714 /* Banner.swift in Sources */,
 				03AEA1D524AC3ED4003A5714 /* ProductCell.swift in Sources */,
+				03A96A0324B6B0ED00781A6A /* Store.swift in Sources */,
 				03AEA1E624AC9BCE003A5714 /* DecoderError.swift in Sources */,
+				03A96A0924B6B20400781A6A /* HomeService.swift in Sources */,
 				03AEA1E824AD7E30003A5714 /* Shortcut.swift in Sources */,
+				03A96A1124B6B2E900781A6A /* HomeReducer.swift in Sources */,
+				03A96A0F24B6B2C700781A6A /* HomeAction.swift in Sources */,
 				03E767DB249B6AFC002B3901 /* AppDelegate.swift in Sources */,
 				0359984D249CC61400254A7F /* Autolayout.swift in Sources */,
 				03E767EF249B6EE4002B3901 /* HomeViewController.swift in Sources */,
@@ -277,11 +331,13 @@
 				03AEA1D924AC3F9A003A5714 /* ArticleCell.swift in Sources */,
 				03E767DD249B6AFC002B3901 /* SceneDelegate.swift in Sources */,
 				03AEA1EE24AD7F48003A5714 /* HTTPMethod.swift in Sources */,
+				03A96A0724B6B1CF00781A6A /* HomeState.swift in Sources */,
 				03AEA1E124AC52D1003A5714 /* Product.swift in Sources */,
 				03AEA1DB24AC4006003A5714 /* UILabel.swift in Sources */,
 				03AEA1F824ADC95C003A5714 /* HeaderView.swift in Sources */,
 				03AEA1FA24ADDEEF003A5714 /* HomeViewModel.swift in Sources */,
 				03AEA1F024AD7F52003A5714 /* Endpoint.swift in Sources */,
+				03A96A0D24B6B2A900781A6A /* HomeEnvironment.swift in Sources */,
 				03AEA1F224AD7F8B003A5714 /* Endpoints.swift in Sources */,
 				03AEA1DD24AC407A003A5714 /* ShortcutCell.swift in Sources */,
 				03AEA1F524ADB6F8003A5714 /* UICollectionView.swift in Sources */,

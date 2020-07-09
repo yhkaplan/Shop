@@ -70,9 +70,9 @@ final class HomeViewController: UIViewController {
     private let apiClient = APIClient()
     private var cancellables = Set<AnyCancellable>()
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-
+    init(viewModel: HomeViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
 
     @available(*, unavailable)
@@ -80,23 +80,31 @@ final class HomeViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private let viewModel = HomeViewModel()
+    private let viewModel: HomeViewModel
+
+    private func updateSections(_ sections: [Section : [Item]]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot.appendSections(Array(sections.keys.sorted(by: <)))
+        for (section, items) in sections {
+            snapshot.appendItems(items, toSection: section)
+        }
+
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        viewModel.$sections
-            .sink { [weak self] sections in
+        viewModel.statePublisher
+            .sink { [weak self] state in
                 guard let strongSelf = self else { return }
 
                 // recreating snapshot because ViewModel.sections becomes single source of truth
-                var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
-                snapshot.appendSections(Array(sections.keys.sorted(by: <)))
-                for (section, items) in sections {
-                    snapshot.appendItems(items, toSection: section)
+                // filter out section updates w/ no changes
+                strongSelf.updateSections(state.sections)
+                if !state.isRefreshControlAnimating {
+                    strongSelf.refreshControl.endRefreshing()
                 }
-
-                strongSelf.dataSource.apply(snapshot, animatingDifferences: true) { } // TODO: do simultaneous updates crash if on main thread?
             }
             .store(in: &cancellables)
 
@@ -134,7 +142,7 @@ final class HomeViewController: UIViewController {
             let sectionIsEmpty = snapshot.numberOfItems(inSection: section) == 0
             if sectionIsEmpty { return nil }
 
-            switch section.kind { // TODO: provide zero height layout while loading
+            switch section.kind {
             case .shortcut:
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.2), heightDimension: .fractionalWidth(0.2))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
