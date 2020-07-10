@@ -8,19 +8,21 @@
 
 import Foundation
 import Combine
+import ComposableArchitecture
 
-func homeReducer(state: inout HomeState, action: HomeAction, environment: HomeEnvironment) -> AnyPublisher<HomeAction, Never> {
+let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment> { state, action, environment in
     switch action {
     case .loadSectionData:
+        state.isSectionLoading = true
         return environment.homeService.homeContentPublisher()
             .replaceError(with: [])
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)  // TODO: use injected q
             .map { HomeAction.loadItemData(sections: $0) }
-            .eraseToAnyPublisher()
+            .eraseToEffect()
 
     case .setSections(let sections):
         state.sections = sections
-        return Just(HomeAction.setRefreshControl(isAnimating: false)).eraseToAnyPublisher()
+        state.isSectionLoading = false
 
     case let .didTapCell(section, item):
         let section = state.sections.keys.sorted(by: <)[section]
@@ -34,14 +36,12 @@ func homeReducer(state: inout HomeState, action: HomeAction, environment: HomeEn
         }
 
     case .loadItemData(let sections):
+        state.isSectionLoading = true
         return environment.homeService.sectionItemsPublisher(sections: sections)
             .replaceError(with: [:])
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main) // TODO: use injected q
             .map { HomeAction.setSections(sections: $0) }
-            .eraseToAnyPublisher()
-
-    case .setRefreshControl(let isAnimating):
-        state.isRefreshControlAnimating = isAnimating
+            .eraseToEffect()
     }
-    return Empty().eraseToAnyPublisher()
+    return .none
 }

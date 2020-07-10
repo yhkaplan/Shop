@@ -8,6 +8,7 @@
 
 import UIKit
 import Combine
+import ComposableArchitecture
 
 final class HomeViewController: UIViewController {
 
@@ -70,8 +71,9 @@ final class HomeViewController: UIViewController {
     private let apiClient = APIClient()
     private var cancellables = Set<AnyCancellable>()
 
-    init(viewModel: HomeViewModel) {
-        self.viewModel = viewModel
+    init(store: Store<HomeState, HomeAction>) {
+        self.store = store
+        self.viewStore = ViewStore(store.scope(state: {$0.view}, action: HomeAction.view))
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -80,7 +82,8 @@ final class HomeViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private let viewModel: HomeViewModel
+    private let store: Store<HomeState, HomeAction>
+    private let viewStore: ViewStore<ViewState, ViewAction>
 
     private func updateSections(_ sections: [Section : [Item]]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
@@ -95,27 +98,25 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Awesome Shop"
+        navigationItem.title = "Awesome Shop"
 
-        viewModel.statePublisher
-            .sink { [weak self] state in
-                guard let strongSelf = self else { return }
-
-                // recreating snapshot because ViewModel.sections becomes single source of truth
-                // filter out section updates w/ no changes
-                strongSelf.updateSections(state.sections)
-                if !state.isRefreshControlAnimating {
-                    strongSelf.refreshControl.endRefreshing()
+        viewStore.publisher.isActivityIndicatorHidden
+            .sink { [weak self] isHidden in
+                if isHidden {
+                    self?.refreshControl.endRefreshing()
                 }
+            }.store(in: &cancellables)
 
-                if case let .presented(product) = state.productDetailScreenIsPresented {
-                    let productDetailView = ProductDetailView(product: product)
-                    strongSelf.navigationController?.pushView(productDetailView)
-                }
-            }
+        viewStore.publisher.productDetailScreenIsPresented
+            .sink { [weak self] presentedState in
+                guard case let .presented(product) = presentedState else { return }
+                let productDetailView = ProductDetailView(product: product)
+                self?.navigationController?.pushView(productDetailView)
+            }.store(in: &cancellables)
+
+        viewStore.publisher.sections
+            .sink { [weak self] unsortedSections in self?.updateSections(unsortedSections) }
             .store(in: &cancellables)
-
-        viewModel.viewDidLoad()
 
         collectionView.refreshControl = refreshControl
         dataSource.supplementaryViewProvider = { [weak self] view, kind, indexPath in
@@ -130,13 +131,16 @@ final class HomeViewController: UIViewController {
 
             return header
         }
+
+        viewStore.send(.viewDidLoad)
     }
 
     @objc private func refreshAll() {
         var snapshot = self.dataSource.snapshot()
         snapshot.deleteAllItems()
         dataSource.apply(snapshot)
-        viewModel.pullToRefreshGestureDidRecognize()
+
+        viewStore.send(.didPullToRefresh)
     }
 
     private func makeCollectionViewLayout() -> UICollectionViewLayout {
@@ -218,11 +222,9 @@ final class HomeViewController: UIViewController {
 
 // TODO: make separate DelegateAdaptor class conform and use closure or combine-based API
 extension HomeViewController: UICollectionViewDelegate {
-
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.didTapCell(section: indexPath.section, item: indexPath.item)
+        viewStore.send(.didTapCell(section: indexPath.section, item: indexPath.item))
     }
-
 }
 
 extension HomeViewController {
@@ -240,6 +242,21 @@ extension HomeViewController {
             case featuredProduct = "featured_product"
         }
     }
+
+    // TODO: write these
+    struct ViewState: Equatable {
+        var sections: [HomeViewController.Section: [HomeViewController.Item]]
+        var isActivityIndicatorHidden: Bool
+        var isRefreshIndicatorAnimating: Bool
+        // TODO: look up screen presentation example to make authentic
+        var productDetailScreenIsPresented: PresentedState<Product>
+    }
+    enum ViewAction {
+        case viewDidLoad
+        case didPullToRefresh
+        case didTapCell(section: Int, item: Int)
+        case setSections(sections: [HomeViewController.Section: [HomeViewController.Item]]) // TODO: what to treat as source of truth, section data passed here or in to HomeState.sections?
+    }
 }
 
 extension HomeViewController.Section: Comparable {
@@ -254,5 +271,32 @@ extension HomeViewController.Section.Kind: Decodable {
         let rawString = try container.decode(String.self)
         guard let kind = Self(rawValue: rawString) else { throw DecoderError.cannotParse }
         self = kind
+    }
+}
+
+// TODO: write these
+extension HomeState {
+    var view: HomeViewController.ViewState {
+        .init(
+            sections: sections,
+            isActivityIndicatorHidden: !isSectionLoading,
+            isRefreshIndicatorAnimating: isSectionLoading,
+            productDetailScreenIsPresented: productDetailScreenIsPresented
+        )
+    }
+}
+
+extension HomeAction {
+    static func view(_ localAction: HomeViewController.ViewAction) -> Self {
+        switch localAction {
+        case .viewDidLoad:
+            return .loadSectionData
+        case .didPullToRefresh:
+            return .loadSectionData
+        case let .didTapCell(section: section, item: item):
+            return .didTapCell(section: section, item: item)
+        case .setSections(sections: let sections):
+            return .setSections(sections: sections)
+        }
     }
 }

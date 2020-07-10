@@ -8,13 +8,13 @@
 
 import Foundation
 
-enum ProductDetailPresentedState {
-    case presented(Product)
+enum PresentedState<T: Equatable>: Equatable {
+    case presented(T)
     case notPresented
 }
 
-struct HomeState {
+struct HomeState: Equatable {
     var sections: [HomeViewController.Section: [HomeViewController.Item]] = [:]
-    var isRefreshControlAnimating = false
-    var productDetailScreenIsPresented: ProductDetailPresentedState = .notPresented
+    var isSectionLoading = false
+    var productDetailScreenIsPresented: PresentedState<Product> = .notPresented
 }
