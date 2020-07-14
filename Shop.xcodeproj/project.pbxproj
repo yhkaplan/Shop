@@ -3,25 +3,22 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0330081124BD621D00436544 /* HomeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0330081024BD621D00436544 /* HomeStore.swift */; };
+		0330081324BD754A00436544 /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0330081224BD754A00436544 /* Dispatcher.swift */; };
 		0359984D249CC61400254A7F /* Autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359984C249CC61400254A7F /* Autolayout.swift */; };
 		035D77DB24B7165E00FBC200 /* ProductDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77DA24B7165E00FBC200 /* ProductDetailView.swift */; };
 		035D77DD24B7193F00FBC200 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77DC24B7193F00FBC200 /* UINavigationController.swift */; };
-		035D77E224B72D7800FBC200 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 035D77E124B72D7800FBC200 /* ComposableArchitecture */; };
-		035D77E524B7F9AB00FBC200 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77E424B7F9AA00FBC200 /* AppEnvironment.swift */; };
-		035D77E724B7FA0800FBC200 /* AppReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77E624B7FA0800FBC200 /* AppReducer.swift */; };
-		035D77E924B802CC00FBC200 /* AppAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77E824B802CC00FBC200 /* AppAction.swift */; };
-		035D77EB24B802D400FBC200 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77EA24B802D400FBC200 /* AppState.swift */; };
 		035D77EE24B8034100FBC200 /* RootTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77ED24B8034100FBC200 /* RootTabBarController.swift */; };
 		03A96A0024B6B06C00781A6A /* Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A969FF24B6B06C00781A6A /* Combine.swift */; };
 		03A96A0724B6B1CF00781A6A /* HomeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0624B6B1CF00781A6A /* HomeState.swift */; };
 		03A96A0924B6B20400781A6A /* HomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0824B6B20400781A6A /* HomeService.swift */; };
 		03A96A0D24B6B2A900781A6A /* HomeEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0C24B6B2A900781A6A /* HomeEnvironment.swift */; };
 		03A96A0F24B6B2C700781A6A /* HomeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0E24B6B2C700781A6A /* HomeAction.swift */; };
-		03A96A1124B6B2E900781A6A /* HomeReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A1024B6B2E900781A6A /* HomeReducer.swift */; };
+		03A96A1124B6B2E900781A6A /* HomeActionCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A1024B6B2E900781A6A /* HomeActionCreator.swift */; };
 		03AEA1D524AC3ED4003A5714 /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AEA1D424AC3ED4003A5714 /* ProductCell.swift */; };
 		03AEA1D724AC3F36003A5714 /* BannerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AEA1D624AC3F36003A5714 /* BannerCell.swift */; };
 		03AEA1D924AC3F9A003A5714 /* ArticleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AEA1D824AC3F9A003A5714 /* ArticleCell.swift */; };
@@ -47,20 +44,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0330081024BD621D00436544 /* HomeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeStore.swift; sourceTree = "<group>"; };
+		0330081224BD754A00436544 /* Dispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dispatcher.swift; sourceTree = "<group>"; };
 		0359984C249CC61400254A7F /* Autolayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Autolayout.swift; sourceTree = "<group>"; };
 		035D77DA24B7165E00FBC200 /* ProductDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailView.swift; sourceTree = "<group>"; };
 		035D77DC24B7193F00FBC200 /* UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationController.swift; sourceTree = "<group>"; };
-		035D77E424B7F9AA00FBC200 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
-		035D77E624B7FA0800FBC200 /* AppReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReducer.swift; sourceTree = "<group>"; };
-		035D77E824B802CC00FBC200 /* AppAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAction.swift; sourceTree = "<group>"; };
-		035D77EA24B802D400FBC200 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		035D77ED24B8034100FBC200 /* RootTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabBarController.swift; sourceTree = "<group>"; };
 		03A969FF24B6B06C00781A6A /* Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Combine.swift; sourceTree = "<group>"; };
 		03A96A0624B6B1CF00781A6A /* HomeState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeState.swift; sourceTree = "<group>"; };
 		03A96A0824B6B20400781A6A /* HomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeService.swift; sourceTree = "<group>"; };
 		03A96A0C24B6B2A900781A6A /* HomeEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEnvironment.swift; sourceTree = "<group>"; };
 		03A96A0E24B6B2C700781A6A /* HomeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAction.swift; sourceTree = "<group>"; };
-		03A96A1024B6B2E900781A6A /* HomeReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeReducer.swift; sourceTree = "<group>"; };
+		03A96A1024B6B2E900781A6A /* HomeActionCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeActionCreator.swift; sourceTree = "<group>"; };
 		03AEA1D424AC3ED4003A5714 /* ProductCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
 		03AEA1D624AC3F36003A5714 /* BannerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerCell.swift; sourceTree = "<group>"; };
 		03AEA1D824AC3F9A003A5714 /* ArticleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleCell.swift; sourceTree = "<group>"; };
@@ -92,7 +87,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				035D77E224B72D7800FBC200 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,10 +122,7 @@
 		035D77E324B7F99700FBC200 /* Architecture */ = {
 			isa = PBXGroup;
 			children = (
-				035D77E424B7F9AA00FBC200 /* AppEnvironment.swift */,
-				035D77E624B7FA0800FBC200 /* AppReducer.swift */,
-				035D77E824B802CC00FBC200 /* AppAction.swift */,
-				035D77EA24B802D400FBC200 /* AppState.swift */,
+				0330081224BD754A00436544 /* Dispatcher.swift */,
 			);
 			path = Architecture;
 			sourceTree = "<group>";
@@ -163,7 +154,8 @@
 				03A96A0824B6B20400781A6A /* HomeService.swift */,
 				03A96A0C24B6B2A900781A6A /* HomeEnvironment.swift */,
 				03A96A0E24B6B2C700781A6A /* HomeAction.swift */,
-				03A96A1024B6B2E900781A6A /* HomeReducer.swift */,
+				03A96A1024B6B2E900781A6A /* HomeActionCreator.swift */,
+				0330081024BD621D00436544 /* HomeStore.swift */,
 			);
 			path = StateManagement;
 			sourceTree = "<group>";
@@ -288,7 +280,6 @@
 			);
 			name = Shop;
 			packageProductDependencies = (
-				035D77E124B72D7800FBC200 /* ComposableArchitecture */,
 			);
 			productName = Shop;
 			productReference = 03E767D7249B6AFC002B3901 /* Shop.app */;
@@ -319,7 +310,6 @@
 			);
 			mainGroup = 03E767CE249B6AFC002B3901;
 			packageReferences = (
-				035D77E024B72D7800FBC200 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 			);
 			productRefGroup = 03E767D8249B6AFC002B3901 /* Products */;
 			projectDirPath = "";
@@ -352,16 +342,15 @@
 				03A96A0024B6B06C00781A6A /* Combine.swift in Sources */,
 				03AEA1D724AC3F36003A5714 /* BannerCell.swift in Sources */,
 				03AEA1EC24AD7EDE003A5714 /* Banner.swift in Sources */,
+				0330081324BD754A00436544 /* Dispatcher.swift in Sources */,
 				03AEA1D524AC3ED4003A5714 /* ProductCell.swift in Sources */,
 				035D77EE24B8034100FBC200 /* RootTabBarController.swift in Sources */,
-				035D77E524B7F9AB00FBC200 /* AppEnvironment.swift in Sources */,
-				035D77EB24B802D400FBC200 /* AppState.swift in Sources */,
 				03AEA1E624AC9BCE003A5714 /* DecoderError.swift in Sources */,
 				03A96A0924B6B20400781A6A /* HomeService.swift in Sources */,
 				03AEA1E824AD7E30003A5714 /* Shortcut.swift in Sources */,
-				035D77E924B802CC00FBC200 /* AppAction.swift in Sources */,
-				03A96A1124B6B2E900781A6A /* HomeReducer.swift in Sources */,
+				03A96A1124B6B2E900781A6A /* HomeActionCreator.swift in Sources */,
 				035D77DB24B7165E00FBC200 /* ProductDetailView.swift in Sources */,
+				0330081124BD621D00436544 /* HomeStore.swift in Sources */,
 				03A96A0F24B6B2C700781A6A /* HomeAction.swift in Sources */,
 				03E767DB249B6AFC002B3901 /* AppDelegate.swift in Sources */,
 				0359984D249CC61400254A7F /* Autolayout.swift in Sources */,
@@ -376,7 +365,6 @@
 				03AEA1F824ADC95C003A5714 /* HeaderView.swift in Sources */,
 				03AEA1F024AD7F52003A5714 /* Endpoint.swift in Sources */,
 				03A96A0D24B6B2A900781A6A /* HomeEnvironment.swift in Sources */,
-				035D77E724B7FA0800FBC200 /* AppReducer.swift in Sources */,
 				03AEA1F224AD7F8B003A5714 /* Endpoints.swift in Sources */,
 				035D77DD24B7193F00FBC200 /* UINavigationController.swift in Sources */,
 				03AEA1DD24AC407A003A5714 /* ShortcutCell.swift in Sources */,
@@ -576,25 +564,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		035D77E024B72D7800FBC200 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.6.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		035D77E124B72D7800FBC200 /* ComposableArchitecture */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 035D77E024B72D7800FBC200 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitecture;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 03E767CF249B6AFC002B3901 /* Project object */;
 }
