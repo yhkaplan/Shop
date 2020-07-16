@@ -9,14 +9,20 @@
 import UIKit
 
 final class RootTabBarController: UITabBarController {
-    init() {
+    private let homeStore: HomeStore
+    private let homeActionCreator: HomeActionCreator
+
+    init(homeStore: HomeStore, homeActionCreator: HomeActionCreator) {
+        self.homeStore = homeStore
+        self.homeActionCreator = homeActionCreator
         super.init(nibName: nil, bundle: nil)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let homeVC = HomeViewController()
+        let homeVC = HomeViewController(store: homeStore, actionCreator: homeActionCreator)
+
         let navController = UINavigationController(rootViewController: homeVC)
         navController.tabBarItem.title = "Home"
         navController.tabBarItem.image = UIImage(systemName: "house")

@@ -9,7 +9,7 @@
 import UIKit
 import Combine
 
-final class HomeViewController: UIViewController, Transitionable {
+final class HomeViewController: UIViewController {
 
     private lazy var collectionView: UICollectionView = {
         let c = UICollectionView(frame: view.bounds, collectionViewLayout: makeCollectionViewLayout())
@@ -67,23 +67,23 @@ final class HomeViewController: UIViewController, Transitionable {
         r.addTarget(self, action: #selector(refreshAll), for: .valueChanged)
         return r
     }()
-
-    private var presenter: HomePresenter!
+    private let apiClient = APIClient()
     private var cancellables = Set<AnyCancellable>()
 
-    init() {
+    init(store: HomeStore, actionCreator: HomeActionCreator) {
+        self.store = store
+        self.actionCreator = actionCreator
         super.init(nibName: nil, bundle: nil)
-        // TODO: all this initialization logic might be in an object called `HomeModule`
-        let interactor = HomeInteractor(model: HomeDataModel(), homeProvider: HomeProvider())
-        let presenter = HomePresenter(interactor: interactor, router: HomeRouter(viewController: self))
-        self.presenter = presenter
     }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    private let store: HomeStore
+    private let actionCreator: HomeActionCreator
+
     private func updateSections(_ sections: [Section : [Item]]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections(Array(sections.keys.sorted(by: <)))
@@ -99,14 +99,19 @@ final class HomeViewController: UIViewController, Transitionable {
 
         navigationItem.title = "Awesome Shop"
 
-        presenter.$isLoading.sink { [weak self] isLoading in
-            if isLoading { return }
-            self?.refreshControl.endRefreshing()
-        }.store(in: &cancellables)
+        store.$state
+            .sink { [weak self] state in
+                if !state.isSectionLoading {
+                    self?.refreshControl.endRefreshing()
+                }
 
-        presenter.$sections.sink { [weak self] sections in
-            self?.updateSections(sections)
-        }.store(in: &cancellables)
+                if case let .presented(product) = state.productDetailScreenIsPresented {
+                    let productDetailView = ProductDetailView(product: product)
+                    self?.navigationController?.pushView(productDetailView)
+                }
+
+                self?.updateSections(state.sections)
+            }.store(in: &cancellables)
 
         collectionView.refreshControl = refreshControl
         dataSource.supplementaryViewProvider = { [weak self] view, kind, indexPath in
@@ -122,15 +127,15 @@ final class HomeViewController: UIViewController, Transitionable {
             return header
         }
 
-        presenter.viewDidLoad()
+        actionCreator.viewDidLoad()
     }
 
     @objc private func refreshAll() {
-        var snapshot = self.dataSource.snapshot() // TODO: this reset logic should be in presenter
+        var snapshot = self.dataSource.snapshot()
         snapshot.deleteAllItems()
         dataSource.apply(snapshot)
 
-        presenter.didPullToRefresh()
+        actionCreator.didPullToRefresh()
     }
 
     private func makeCollectionViewLayout() -> UICollectionViewLayout {
@@ -213,7 +218,7 @@ final class HomeViewController: UIViewController, Transitionable {
 // TODO: make separate DelegateAdaptor class conform and use closure or combine-based API
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presenter.didTapCell(section: indexPath.section, item: indexPath.item)
+        actionCreator.didTapCell(section: indexPath.section, item: indexPath.item)
     }
 }
 

@@ -16,7 +16,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         let window = UIWindow(windowScene: windowScene)
-        window.rootViewController = RootTabBarController()
+        let dispatcher = Dispatcher<HomeAction>()
+        let homeStore = HomeStore(dispatcher: dispatcher)
+        let homeActionCreator = HomeActionCreator(dispatcher: dispatcher, environment: HomeEnvironment())
+        window.rootViewController = RootTabBarController(homeStore: homeStore, homeActionCreator: homeActionCreator)
         self.window = window
         window.makeKeyAndVisible()
     }
