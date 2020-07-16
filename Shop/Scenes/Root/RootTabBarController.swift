@@ -7,26 +7,24 @@
 //
 
 import UIKit
+import ComposableArchitecture
 
 final class RootTabBarController: UITabBarController {
-    private let homeStore: HomeStore
-    private let homeActionCreator: HomeActionCreator
+    private let store: Store<AppState, AppAction>
 
-    init(homeStore: HomeStore, homeActionCreator: HomeActionCreator) {
-        self.homeStore = homeStore
-        self.homeActionCreator = homeActionCreator
+    init(store: Store<AppState, AppAction>) {
+        self.store = store
         super.init(nibName: nil, bundle: nil)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let homeVC = HomeViewController(store: homeStore, actionCreator: homeActionCreator)
-
+        let homeStore = store.scope(state: { $0.homeState }, action: AppAction.homeViewController)
+        let homeVC = HomeViewController(store: homeStore)
         let navController = UINavigationController(rootViewController: homeVC)
         navController.tabBarItem.title = "Home"
         navController.tabBarItem.image = UIImage(systemName: "house")
-
         viewControllers = [navController]
     }
 

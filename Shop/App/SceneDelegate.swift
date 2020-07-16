@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftUI
+import ComposableArchitecture
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -16,10 +17,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         let window = UIWindow(windowScene: windowScene)
-        let dispatcher = Dispatcher<HomeAction>()
-        let homeStore = HomeStore(dispatcher: dispatcher)
-        let homeActionCreator = HomeActionCreator(dispatcher: dispatcher, environment: HomeEnvironment())
-        window.rootViewController = RootTabBarController(homeStore: homeStore, homeActionCreator: homeActionCreator)
+        let store = Store(
+            initialState: AppState(),
+            reducer: appReducer,
+            environment: AppEnvironment(
+                mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
+                home: HomeEnvironment()
+            )
+        )
+
+        window.rootViewController = RootTabBarController(store: store)
         self.window = window
         window.makeKeyAndVisible()
     }
