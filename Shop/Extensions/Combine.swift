@@ -6,8 +6,8 @@
 //  Copyright © 2020 yhkaplan. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 /// Used from: https://github.com/CombineCommunity/CombineExt
 public extension Publisher {

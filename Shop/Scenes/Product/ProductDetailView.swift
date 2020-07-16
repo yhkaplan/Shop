@@ -23,18 +23,19 @@ struct ProductDetailView: View {
         }.navigationBarTitle(product.name)
     }
 }
-#if DEBUG
-extension Product {
-    static var previewData: Self {
-        .init(id: "123", name: "Banana", price: 7.0, imageURL: "globe")
-    }
-}
 
-struct ProductDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            ProductDetailView(product: Product.previewData)
+#if DEBUG
+    extension Product {
+        static var previewData: Self {
+            .init(id: "123", name: "Banana", price: 7.0, imageURL: "globe")
         }
     }
-}
+
+    struct ProductDetailView_Previews: PreviewProvider {
+        static var previews: some View {
+            NavigationView {
+                ProductDetailView(product: Product.previewData)
+            }
+        }
+    }
 #endif

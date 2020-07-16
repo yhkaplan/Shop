@@ -6,9 +6,9 @@
 //  Copyright © 2020 yhkaplan. All rights reserved.
 //
 
-import Foundation
 import Combine
 import ComposableArchitecture
+import Foundation
 
 let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment> { state, action, environment in
     switch action {
@@ -16,11 +16,11 @@ let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment> { state, actio
         state.isSectionLoading = true
         return environment.homeService.homeContentPublisher()
             .replaceError(with: [])
-            .receive(on: DispatchQueue.main)  // TODO: use injected q
+            .receive(on: DispatchQueue.main) // TODO: use injected q
             .map { HomeAction.loadItemData(sections: $0) }
             .eraseToEffect()
 
-    case .setSections(let sections):
+    case let .setSections(sections):
         state.sections = sections
         state.isSectionLoading = false
 
@@ -29,13 +29,13 @@ let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment> { state, actio
         let item = state.sections[section]?[item]
 
         switch item {
-        case .product(let product):
+        case let .product(product):
             state.productDetailScreenIsPresented = .presented(product)
 
-        default: fatalError() // TODO: 
+        default: fatalError() // TODO:
         }
 
-    case .loadItemData(let sections):
+    case let .loadItemData(sections):
         state.isSectionLoading = true
         return environment.homeService.sectionItemsPublisher(sections: sections)
             .replaceError(with: [:])

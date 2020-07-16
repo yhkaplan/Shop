@@ -6,8 +6,8 @@
 //  Copyright © 2020 yhkaplan. All rights reserved.
 //
 
-import UIKit
 import ComposableArchitecture
+import UIKit
 
 final class RootTabBarController: UITabBarController {
     private let store: Store<AppState, AppAction>

@@ -27,6 +27,7 @@ extension Product: Decodable {
         case id, name, price
         case imageURL = "image_url"
     }
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let priceString = try container.decode(String.self, forKey: .price)

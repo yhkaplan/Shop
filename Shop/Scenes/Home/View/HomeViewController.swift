@@ -6,12 +6,11 @@
 //  Copyright © 2020 yhkaplan. All rights reserved.
 //
 
-import UIKit
 import Combine
 import ComposableArchitecture
+import UIKit
 
 final class HomeViewController: UIViewController {
-
     private lazy var collectionView: UICollectionView = {
         let c = UICollectionView(frame: view.bounds, collectionViewLayout: makeCollectionViewLayout())
 
@@ -68,12 +67,13 @@ final class HomeViewController: UIViewController {
         r.addTarget(self, action: #selector(refreshAll), for: .valueChanged)
         return r
     }()
+
     private let apiClient = APIClient()
     private var cancellables = Set<AnyCancellable>()
 
     init(store: Store<HomeState, HomeAction>) {
         self.store = store
-        self.viewStore = ViewStore(store.scope(state: {$0.view}, action: HomeAction.view))
+        viewStore = ViewStore(store.scope(state: { $0.view }, action: HomeAction.view))
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -85,7 +85,7 @@ final class HomeViewController: UIViewController {
     private let store: Store<HomeState, HomeAction>
     private let viewStore: ViewStore<ViewState, ViewAction>
 
-    private func updateSections(_ sections: [Section : [Item]]) {
+    private func updateSections(_ sections: [Section: [Item]]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections(Array(sections.keys.sorted(by: <)))
         for (section, items) in sections {
@@ -119,7 +119,7 @@ final class HomeViewController: UIViewController {
             .store(in: &cancellables)
 
         collectionView.refreshControl = refreshControl
-        dataSource.supplementaryViewProvider = { [weak self] view, kind, indexPath in
+        dataSource.supplementaryViewProvider = { [weak self] _, kind, indexPath in
             guard let strongSelf = self else { return nil }
             let header = self?.collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
@@ -136,7 +136,7 @@ final class HomeViewController: UIViewController {
     }
 
     @objc private func refreshAll() {
-        var snapshot = self.dataSource.snapshot()
+        var snapshot = dataSource.snapshot()
         snapshot.deleteAllItems()
         dataSource.apply(snapshot)
 
@@ -144,7 +144,7 @@ final class HomeViewController: UIViewController {
     }
 
     private func makeCollectionViewLayout() -> UICollectionViewLayout {
-        UICollectionViewCompositionalLayout { [weak self] sectionIndex, environment in
+        UICollectionViewCompositionalLayout { [weak self] sectionIndex, _ in
             guard let self = self else { return nil }
 
             let snapshot = self.dataSource.snapshot()
@@ -190,7 +190,6 @@ final class HomeViewController: UIViewController {
                 section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
                 section.interGroupSpacing = 10
 
-
                 let header = NSCollectionLayoutBoundarySupplementaryItem(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
@@ -217,7 +216,6 @@ final class HomeViewController: UIViewController {
             }
         }
     }
-
 }
 
 // TODO: make separate DelegateAdaptor class conform and use closure or combine-based API
@@ -228,7 +226,6 @@ extension HomeViewController: UICollectionViewDelegate {
 }
 
 extension HomeViewController {
-
     enum Item: Hashable { case product(Product), article(Article), banner(Banner), shortcut(Shortcut) }
 
     struct Section: Hashable, Decodable {
@@ -251,6 +248,7 @@ extension HomeViewController {
         // TODO: look up screen presentation example to make authentic
         var productDetailScreenIsPresented: PresentedState<Product>
     }
+
     enum ViewAction {
         case viewDidLoad
         case didPullToRefresh
@@ -295,7 +293,7 @@ extension HomeAction {
             return .loadSectionData
         case let .didTapCell(section: section, item: item):
             return .didTapCell(section: section, item: item)
-        case .setSections(sections: let sections):
+        case let .setSections(sections: sections):
             return .setSections(sections: sections)
         }
     }

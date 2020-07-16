@@ -46,5 +46,4 @@ final class HeaderView: UICollectionReusableView {
         titleLabel.text = data.title
         subtitleLabel.text = data.subtitle
     }
-
 }

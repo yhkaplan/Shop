@@ -6,9 +6,9 @@
 //  Copyright © 2020 yhkaplan. All rights reserved.
 //
 
-import Foundation
 import Combine
 import ComposableArchitecture
+import Foundation
 
 struct AppEnvironment {
     var mainQueue: AnySchedulerOf<DispatchQueue>

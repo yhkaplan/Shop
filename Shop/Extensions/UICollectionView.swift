@@ -13,6 +13,7 @@ protocol ConfigurableCell {
     static var reuseID: String { get }
     func configure(with data: Data)
 }
+
 extension UICollectionView {
     func registerCell<Cell: ConfigurableCell & UICollectionViewCell>(_ type: Cell.Type) {
         register(type.self, forCellWithReuseIdentifier: type.reuseID)
@@ -24,4 +25,3 @@ extension UICollectionView {
         return cell
     }
 }
-

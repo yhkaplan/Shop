@@ -6,13 +6,13 @@
 //  Copyright © 2020 yhkaplan. All rights reserved.
 //
 
-import Foundation
 import ComposableArchitecture
+import Foundation
 
 let appReducer: Reducer<AppState, AppAction, AppEnvironment> = .combine(
     homeReducer.pullback(
         state: \AppState.homeState,
         action: /AppAction.homeViewController,
-        environment: {$0.home }
+        environment: { $0.home }
     )
 )

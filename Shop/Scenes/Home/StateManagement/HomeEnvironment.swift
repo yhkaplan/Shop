@@ -12,6 +12,6 @@ struct HomeEnvironment {
     init(homeService: HomeService = HomeService()) {
         self.homeService = homeService
     }
-    
+
     let homeService: HomeService
 }

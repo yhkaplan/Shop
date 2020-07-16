@@ -40,6 +40,7 @@ public protocol LayoutDimension {
     func constraint(equalToConstant c: CGFloat) -> NSLayoutConstraint
     func constraint(equalTo anchor: Self, multiplier m: CGFloat, constant c: CGFloat) -> NSLayoutConstraint
 }
+
 extension NSLayoutDimension: LayoutDimension {}
 
 public protocol LayoutAnchor {
@@ -55,7 +56,6 @@ public struct LayoutDimensionProperty<Dimension: LayoutDimension> {
 }
 
 public extension LayoutDimensionProperty {
-
     struct DimensionConstraint<Dimension: LayoutDimension> {
         let layoutDimensionProperty: LayoutDimensionProperty<Dimension>
         let multiplier: CGFloat
@@ -69,33 +69,32 @@ public extension LayoutDimensionProperty {
     func equal(to otherLayoutDimension: LayoutDimensionProperty, multiplier: CGFloat = 1.0, offsetBy constant: CGFloat = 0.0) {
         dimension.constraint(equalTo: otherLayoutDimension.dimension, multiplier: multiplier, constant: constant).isActive = true
     }
-
 }
 
 // MARK: - Operator overloads
+
 public extension LayoutDimensionProperty {
-
-    static func ==(lhs: LayoutDimensionProperty<Dimension>, rhs: CGFloat) {
+    static func == (lhs: LayoutDimensionProperty<Dimension>, rhs: CGFloat) {
         lhs.equal(to: rhs)
     }
 
-    static func ==(lhs: LayoutDimensionProperty<Dimension>, rhs: LayoutDimensionProperty<Dimension>) {
+    static func == (lhs: LayoutDimensionProperty<Dimension>, rhs: LayoutDimensionProperty<Dimension>) {
         lhs.equal(to: rhs)
     }
 
-    static func ==(lhs: LayoutDimensionProperty<Dimension>, rhs: DimensionConstraint<Dimension>) {
+    static func == (lhs: LayoutDimensionProperty<Dimension>, rhs: DimensionConstraint<Dimension>) {
         lhs.equal(to: rhs.layoutDimensionProperty, multiplier: rhs.multiplier, offsetBy: rhs.offset)
     }
 
-    static func +(lhs: LayoutDimensionProperty<Dimension>, rhs: CGFloat) -> DimensionConstraint<Dimension> {
+    static func + (lhs: LayoutDimensionProperty<Dimension>, rhs: CGFloat) -> DimensionConstraint<Dimension> {
         return DimensionConstraint(layoutDimensionProperty: lhs, multiplier: 1.0, offset: rhs)
     }
 
-    static func -(lhs: LayoutDimensionProperty<Dimension>, rhs: CGFloat) -> DimensionConstraint<Dimension> {
+    static func - (lhs: LayoutDimensionProperty<Dimension>, rhs: CGFloat) -> DimensionConstraint<Dimension> {
         return DimensionConstraint(layoutDimensionProperty: lhs, multiplier: 1.0, offset: -rhs)
     }
 
-    static func *(lhs: LayoutDimensionProperty<Dimension>, rhs: CGFloat) -> DimensionConstraint<Dimension> {
+    static func * (lhs: LayoutDimensionProperty<Dimension>, rhs: CGFloat) -> DimensionConstraint<Dimension> {
         return DimensionConstraint(layoutDimensionProperty: lhs, multiplier: rhs, offset: 0.0)
     }
 }
@@ -105,7 +104,6 @@ public struct LayoutProperty<Anchor: LayoutAnchor> {
 }
 
 public extension LayoutProperty {
-
     func equal(to otherLayoutProperty: LayoutProperty, offsetBy constant: CGFloat = 0.0) {
         anchor.constraint(equalTo: otherLayoutProperty.anchor, constant: constant).isActive = true
     }
@@ -117,49 +115,47 @@ public extension LayoutProperty {
     func lessThanOrEqual(to otherLayoutProperty: LayoutProperty, offsetBy constant: CGFloat = 0.0) {
         anchor.constraint(lessThanOrEqualTo: otherLayoutProperty.anchor, constant: constant).isActive = true
     }
-
 }
 
 // MARK: - Operator overloads
-public extension LayoutProperty {
 
-    static func +(lhs: LayoutProperty<Anchor>, rhs: CGFloat) -> (LayoutProperty<Anchor>, CGFloat) {
+public extension LayoutProperty {
+    static func + (lhs: LayoutProperty<Anchor>, rhs: CGFloat) -> (LayoutProperty<Anchor>, CGFloat) {
         return (lhs, rhs)
     }
 
-    static func -(lhs: LayoutProperty<Anchor>, rhs: CGFloat) -> (LayoutProperty<Anchor>, CGFloat) {
+    static func - (lhs: LayoutProperty<Anchor>, rhs: CGFloat) -> (LayoutProperty<Anchor>, CGFloat) {
         return (lhs, -rhs)
     }
 
-    static func ==(lhs: LayoutProperty<Anchor>, rhs: (layoutProperty: LayoutProperty<Anchor>, offset: CGFloat)) {
+    static func == (lhs: LayoutProperty<Anchor>, rhs: (layoutProperty: LayoutProperty<Anchor>, offset: CGFloat)) {
         lhs.equal(to: rhs.layoutProperty, offsetBy: rhs.offset)
     }
 
-    static func ==(lhs: LayoutProperty<Anchor>, rhs: LayoutProperty<Anchor>) {
+    static func == (lhs: LayoutProperty<Anchor>, rhs: LayoutProperty<Anchor>) {
         lhs.equal(to: rhs)
     }
 
-    static func >=(lhs: LayoutProperty<Anchor>, rhs: (layoutProperty: LayoutProperty<Anchor>, offset: CGFloat)) {
+    static func >= (lhs: LayoutProperty<Anchor>, rhs: (layoutProperty: LayoutProperty<Anchor>, offset: CGFloat)) {
         lhs.greaterThanOrEqual(to: rhs.layoutProperty, offsetBy: rhs.offset)
     }
 
-    static func >=(lhs: LayoutProperty<Anchor>, rhs: LayoutProperty<Anchor>) {
+    static func >= (lhs: LayoutProperty<Anchor>, rhs: LayoutProperty<Anchor>) {
         lhs.greaterThanOrEqual(to: rhs)
     }
 
-    static func <=(lhs: LayoutProperty<Anchor>, rhs: (layoutProperty: LayoutProperty<Anchor>, offset: CGFloat)) {
+    static func <= (lhs: LayoutProperty<Anchor>, rhs: (layoutProperty: LayoutProperty<Anchor>, offset: CGFloat)) {
         lhs.lessThanOrEqual(to: rhs.layoutProperty, offsetBy: rhs.offset)
     }
 
-    static func <=(lhs: LayoutProperty<Anchor>, rhs: LayoutProperty<Anchor>) {
+    static func <= (lhs: LayoutProperty<Anchor>, rhs: LayoutProperty<Anchor>) {
         lhs.lessThanOrEqual(to: rhs)
     }
-
 }
+
 // swiftlint:enable operator_whitespace
 
 public final class LayoutProxy {
-
     public lazy var leading = LayoutProperty(anchor: view.leadingAnchor)
     public lazy var trailing = LayoutProperty(anchor: view.trailingAnchor)
     public lazy var top = LayoutProperty(anchor: view.topAnchor)
@@ -179,11 +175,9 @@ public final class LayoutProxy {
     public init(view: UIView) {
         self.view = view
     }
-
 }
 
 public final class LayoutGuideProxy {
-
     private let layoutGuide: UILayoutGuide
 
     public lazy var leading = LayoutProperty(anchor: layoutGuide.leadingAnchor)
@@ -194,5 +188,4 @@ public final class LayoutGuideProxy {
     init(layoutGuide: UILayoutGuide) {
         self.layoutGuide = layoutGuide
     }
-
 }
