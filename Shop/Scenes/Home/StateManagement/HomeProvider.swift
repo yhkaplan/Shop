@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-final class HomeService {
+final class HomeProvider {
     private let apiClient: APIClientType
 
     init(apiClient: APIClientType = APIClient()) {
