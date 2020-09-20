@@ -1,17 +1,14 @@
 # 🎁Shop
 
-Shop is an example e-commerce app with a modern architecture and view layout implementation. It's made to showcase the following things:
+Shop is an example e-commerce app with a modern architecture and view layout implementation. It's made to showcase the following things (some of which are still in progress):
 
-- Developing a complex e-commerce (network client-focused) app with SwiftUI and UIKit
+- A complex e-commerce (network client-focused) app with both SwiftUI and UIKit
 - A highly dynamic and backend-driven home screen that's almost entirely customizable through the server
-- UIKit and SwiftUI interop with an iOS 13 minimum version requirement
-- Migration from UIKit to SwiftUI
-- A variety of architectures common to iOS apps
+- Migration piecemeal from UIKit to SwiftUI
+- A variety of architectures common to iOS apps with a particular focus on SwiftUI-friendly ones
 - Testing with Combine and SwiftUI
 - Dynamic type and other accessibility features
-- Localization and formatters (once I get around to those...)
-
-TODO: put nice GIF or 2 here
+- Localization and formatters
 
 ## Starting the example server
 
@@ -44,6 +41,7 @@ This app is my personal playground to experiment with new APIs, but feel free to
 I referred to these sources for information on architecture:
 
 <details>
+<summary>Reference</summary>
 
 ### General
 - https://medium.com/eureka-engineering/thought-about-arch-for-swiftui-1b0496d8094
