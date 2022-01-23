@@ -3,20 +3,22 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0359984D249CC61400254A7F /* Autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359984C249CC61400254A7F /* Autolayout.swift */; };
 		035D77DB24B7165E00FBC200 /* ProductDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77DA24B7165E00FBC200 /* ProductDetailView.swift */; };
 		035D77DD24B7193F00FBC200 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77DC24B7193F00FBC200 /* UINavigationController.swift */; };
-		035D77E224B72D7800FBC200 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 035D77E124B72D7800FBC200 /* ComposableArchitecture */; };
-		035D77E524B7F9AB00FBC200 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77E424B7F9AA00FBC200 /* AppEnvironment.swift */; };
+		035D77E524B7F9AB00FBC200 /* AppEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77E424B7F9AA00FBC200 /* AppEnv.swift */; };
 		035D77E724B7FA0800FBC200 /* AppReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77E624B7FA0800FBC200 /* AppReducer.swift */; };
 		035D77E924B802CC00FBC200 /* AppAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77E824B802CC00FBC200 /* AppAction.swift */; };
 		035D77EB24B802D400FBC200 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77EA24B802D400FBC200 /* AppState.swift */; };
 		035D77EE24B8034100FBC200 /* RootTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035D77ED24B8034100FBC200 /* RootTabBarController.swift */; };
-		03A96A0024B6B06C00781A6A /* Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A969FF24B6B06C00781A6A /* Combine.swift */; };
+		038BFD04279D0D2000B7D8DE /* Reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BFD03279D0D2000B7D8DE /* Reducer.swift */; };
+		038BFD06279D0D3300B7D8DE /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BFD05279D0D3300B7D8DE /* Store.swift */; };
+		038BFD08279D0D5B00B7D8DE /* ViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BFD07279D0D5B00B7D8DE /* ViewStore.swift */; };
+		038BFD0A279D0D6800B7D8DE /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BFD09279D0D6800B7D8DE /* CancellationToken.swift */; };
 		03A96A0724B6B1CF00781A6A /* HomeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0624B6B1CF00781A6A /* HomeState.swift */; };
 		03A96A0924B6B20400781A6A /* HomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0824B6B20400781A6A /* HomeService.swift */; };
 		03A96A0D24B6B2A900781A6A /* HomeEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A0C24B6B2A900781A6A /* HomeEnvironment.swift */; };
@@ -50,12 +52,15 @@
 		0359984C249CC61400254A7F /* Autolayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Autolayout.swift; sourceTree = "<group>"; };
 		035D77DA24B7165E00FBC200 /* ProductDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailView.swift; sourceTree = "<group>"; };
 		035D77DC24B7193F00FBC200 /* UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationController.swift; sourceTree = "<group>"; };
-		035D77E424B7F9AA00FBC200 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		035D77E424B7F9AA00FBC200 /* AppEnv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnv.swift; sourceTree = "<group>"; };
 		035D77E624B7FA0800FBC200 /* AppReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReducer.swift; sourceTree = "<group>"; };
 		035D77E824B802CC00FBC200 /* AppAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAction.swift; sourceTree = "<group>"; };
 		035D77EA24B802D400FBC200 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		035D77ED24B8034100FBC200 /* RootTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabBarController.swift; sourceTree = "<group>"; };
-		03A969FF24B6B06C00781A6A /* Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Combine.swift; sourceTree = "<group>"; };
+		038BFD03279D0D2000B7D8DE /* Reducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reducer.swift; sourceTree = "<group>"; };
+		038BFD05279D0D3300B7D8DE /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		038BFD07279D0D5B00B7D8DE /* ViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStore.swift; sourceTree = "<group>"; };
+		038BFD09279D0D6800B7D8DE /* CancellationToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CancellationToken.swift; sourceTree = "<group>"; };
 		03A96A0624B6B1CF00781A6A /* HomeState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeState.swift; sourceTree = "<group>"; };
 		03A96A0824B6B20400781A6A /* HomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeService.swift; sourceTree = "<group>"; };
 		03A96A0C24B6B2A900781A6A /* HomeEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEnvironment.swift; sourceTree = "<group>"; };
@@ -92,7 +97,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				035D77E224B72D7800FBC200 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,10 +132,10 @@
 		035D77E324B7F99700FBC200 /* Architecture */ = {
 			isa = PBXGroup;
 			children = (
-				035D77E424B7F9AA00FBC200 /* AppEnvironment.swift */,
-				035D77E624B7FA0800FBC200 /* AppReducer.swift */,
-				035D77E824B802CC00FBC200 /* AppAction.swift */,
-				035D77EA24B802D400FBC200 /* AppState.swift */,
+				038BFD03279D0D2000B7D8DE /* Reducer.swift */,
+				038BFD05279D0D3300B7D8DE /* Store.swift */,
+				038BFD07279D0D5B00B7D8DE /* ViewStore.swift */,
+				038BFD09279D0D6800B7D8DE /* CancellationToken.swift */,
 			);
 			path = Architecture;
 			sourceTree = "<group>";
@@ -171,6 +175,10 @@
 		03AEA1DE24AC4109003A5714 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				035D77E424B7F9AA00FBC200 /* AppEnv.swift */,
+				035D77E624B7FA0800FBC200 /* AppReducer.swift */,
+				035D77E824B802CC00FBC200 /* AppAction.swift */,
+				035D77EA24B802D400FBC200 /* AppState.swift */,
 				03E767DA249B6AFC002B3901 /* AppDelegate.swift */,
 				03E767DC249B6AFC002B3901 /* SceneDelegate.swift */,
 			);
@@ -205,7 +213,6 @@
 			children = (
 				03AEA1DA24AC4006003A5714 /* UILabel.swift */,
 				03AEA1F424ADB6F8003A5714 /* UICollectionView.swift */,
-				03A969FF24B6B06C00781A6A /* Combine.swift */,
 				035D77DC24B7193F00FBC200 /* UINavigationController.swift */,
 			);
 			path = Extensions;
@@ -288,7 +295,6 @@
 			);
 			name = Shop;
 			packageProductDependencies = (
-				035D77E124B72D7800FBC200 /* ComposableArchitecture */,
 			);
 			productName = Shop;
 			productReference = 03E767D7249B6AFC002B3901 /* Shop.app */;
@@ -319,7 +325,6 @@
 			);
 			mainGroup = 03E767CE249B6AFC002B3901;
 			packageReferences = (
-				035D77E024B72D7800FBC200 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 			);
 			productRefGroup = 03E767D8249B6AFC002B3901 /* Products */;
 			projectDirPath = "";
@@ -348,13 +353,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				038BFD06279D0D3300B7D8DE /* Store.swift in Sources */,
 				03AEA1EA24AD7E84003A5714 /* Article.swift in Sources */,
-				03A96A0024B6B06C00781A6A /* Combine.swift in Sources */,
+				038BFD08279D0D5B00B7D8DE /* ViewStore.swift in Sources */,
 				03AEA1D724AC3F36003A5714 /* BannerCell.swift in Sources */,
 				03AEA1EC24AD7EDE003A5714 /* Banner.swift in Sources */,
+				038BFD0A279D0D6800B7D8DE /* CancellationToken.swift in Sources */,
 				03AEA1D524AC3ED4003A5714 /* ProductCell.swift in Sources */,
 				035D77EE24B8034100FBC200 /* RootTabBarController.swift in Sources */,
-				035D77E524B7F9AB00FBC200 /* AppEnvironment.swift in Sources */,
+				035D77E524B7F9AB00FBC200 /* AppEnv.swift in Sources */,
 				035D77EB24B802D400FBC200 /* AppState.swift in Sources */,
 				03AEA1E624AC9BCE003A5714 /* DecoderError.swift in Sources */,
 				03A96A0924B6B20400781A6A /* HomeService.swift in Sources */,
@@ -374,6 +381,7 @@
 				03AEA1E124AC52D1003A5714 /* Product.swift in Sources */,
 				03AEA1DB24AC4006003A5714 /* UILabel.swift in Sources */,
 				03AEA1F824ADC95C003A5714 /* HeaderView.swift in Sources */,
+				038BFD04279D0D2000B7D8DE /* Reducer.swift in Sources */,
 				03AEA1F024AD7F52003A5714 /* Endpoint.swift in Sources */,
 				03A96A0D24B6B2A900781A6A /* HomeEnvironment.swift in Sources */,
 				035D77E724B7FA0800FBC200 /* AppReducer.swift in Sources */,
@@ -578,25 +586,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		035D77E024B72D7800FBC200 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.6.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		035D77E124B72D7800FBC200 /* ComposableArchitecture */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 035D77E024B72D7800FBC200 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitecture;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 03E767CF249B6AFC002B3901 /* Project object */;
 }

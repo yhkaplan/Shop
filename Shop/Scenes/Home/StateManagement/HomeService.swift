@@ -10,64 +10,59 @@ import Combine
 import Foundation
 
 final class HomeService {
+    typealias Section = (section: HomeViewController.Section, items: [HomeViewController.Item])
     private let apiClient: APIClientType
 
     init(apiClient: APIClientType = APIClient()) {
         self.apiClient = apiClient
     }
 
-    func homeContentPublisher() -> AnyPublisher<[HomeViewController.Section], Error> {
-        apiClient.request(endpoint: GETHomeContentEndpoint())
-            .map(\.sections)
-            .eraseToAnyPublisher()
+    func homeContent() async throws -> [HomeViewController.Section] {
+        let success = try await apiClient.request(endpoint: GETHomeContentEndpoint())
+        return success.sections
     }
 
-    func sectionItemsPublisher(sections: [HomeViewController.Section]) -> AnyPublisher<[HomeViewController.Section: [HomeViewController.Item]], Error> {
-        let publishers = sections.map(_sectionItemsPublisher)
-        return publishers
-            .combineLatest()
-            .map { sectionArray in
-                sectionArray.reduce(into: [:]) { result, keyValuePair in
-                    result[keyValuePair.section] = keyValuePair.items
+    func sectionItems(sections: [HomeViewController.Section]) async throws -> [HomeViewController.Section: [HomeViewController.Item]] {
+        return try await withThrowingTaskGroup(of: Section.self) { group in
+            for section in sections {
+                group.addTask {
+                    // TODO: strong ref
+                    try await self._sectionItems(for: section)
                 }
             }
-            .eraseToAnyPublisher()
+
+            return try await group.reduce(into: [:]) { result, keyValuePair in
+                result[keyValuePair.section] = keyValuePair.items
+            }
+        }
     }
 
-    private func _sectionItemsPublisher(section: HomeViewController.Section) -> AnyPublisher<(section: HomeViewController.Section, items: [HomeViewController.Item]), Error> {
+
+    private func _sectionItems(for section: HomeViewController.Section) async throws -> Section {
         switch section.kind {
         case .article:
-            return apiClient.request(endpoint: GETArticlesEndpoint(id: section.id))
-                .map(\.articles)
-                .map { articles in
-                    let items: [HomeViewController.Item] = articles.map { .article($0) }
-                    return (section: section, items: items)
-                }
-                .eraseToAnyPublisher()
+            let success = try await apiClient.request(endpoint: GETArticlesEndpoint(id: section.id))
+            let articles = success.articles
+            let items: [HomeViewController.Item] = articles.map { .article($0) }
+            return (section: section, items: items)
+
         case .featuredProduct:
-            return apiClient.request(endpoint: GETFeaturedProductsEndpoint(id: section.id))
-                .map(\.products)
-                .map { products in
-                    let items: [HomeViewController.Item] = products.map { .product($0) }
-                    return (section: section, items: items)
-                }
-                .eraseToAnyPublisher()
+            let success = try await apiClient.request(endpoint: GETFeaturedProductsEndpoint(id: section.id))
+            let products = success.products
+            let items: [HomeViewController.Item] = products.map { .product($0) }
+            return (section: section, items: items)
+
         case .shortcut:
-            return apiClient.request(endpoint: GETShortcutsEndpoint(id: section.id))
-                .map(\.shortcuts)
-                .map { shortcuts in
-                    let items: [HomeViewController.Item] = shortcuts.map { .shortcut($0) }
-                    return (section: section, items: items)
-                }
-                .eraseToAnyPublisher()
+            let success = try await apiClient.request(endpoint: GETShortcutsEndpoint(id: section.id))
+            let shortcuts = success.shortcuts
+            let items: [HomeViewController.Item] = shortcuts.map { .shortcut($0) }
+            return (section: section, items: items)
+
         case .banner:
-            return apiClient.request(endpoint: GETBannersEndpoint(id: section.id))
-                .map(\.banners)
-                .map { banners in
-                    let items: [HomeViewController.Item] = banners.map { .banner($0) }
-                    return (section: section, items: items)
-                }
-                .eraseToAnyPublisher()
+            let success = try await apiClient.request(endpoint: GETBannersEndpoint(id: section.id))
+            let banners = success.banners
+            let items: [HomeViewController.Item] = banners.map { .banner($0) }
+            return (section: section, items: items)
         }
     }
 }

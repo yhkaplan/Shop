@@ -7,9 +7,8 @@
 //
 
 import UIKit
-// ref: https://www.swiftbysundell.com/posts/building-dsls-in-swift
-// TODO: move to Sukar as SPM repo
 
+// ref: https://www.swiftbysundell.com/posts/building-dsls-in-swift
 extension UIView {
     func layout(closure: (LayoutProxy) -> Void) {
         translatesAutoresizingMaskIntoConstraints = false

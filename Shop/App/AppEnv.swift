@@ -7,10 +7,8 @@
 //
 
 import Combine
-import ComposableArchitecture
 import Foundation
 
-struct AppEnvironment {
-    var mainQueue: AnySchedulerOf<DispatchQueue>
+struct AppEnv {
     var home: HomeEnvironment
 }
