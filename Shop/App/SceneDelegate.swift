@@ -6,7 +6,6 @@
 //  Copyright © 2020 yhkaplan. All rights reserved.
 //
 
-import ComposableArchitecture
 import SwiftUI
 import UIKit
 
@@ -20,10 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let store = Store(
             initialState: AppState(),
             reducer: appReducer,
-            environment: AppEnvironment(
-                mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
-                home: HomeEnvironment()
-            )
+            env: AppEnv(home: HomeEnvironment())
         )
 
         window.rootViewController = RootTabBarController(store: store)

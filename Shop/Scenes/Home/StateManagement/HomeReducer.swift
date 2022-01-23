@@ -6,19 +6,17 @@
 //  Copyright © 2020 yhkaplan. All rights reserved.
 //
 
-import Combine
-import ComposableArchitecture
 import Foundation
 
+@MainActor
 let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment> { state, action, environment in
     switch action {
     case .loadSectionData:
         state.isSectionLoading = true
-        return environment.homeService.homeContentPublisher()
-            .replaceError(with: [])
-            .receive(on: DispatchQueue.main) // TODO: use injected q
-            .map { HomeAction.loadItemData(sections: $0) }
-            .eraseToEffect()
+        return Task {
+            guard let sections = try? await environment.homeService.homeContent() else { return nil }
+            return HomeAction.loadItemData(sections: sections)
+        }
 
     case let .setSections(sections):
         state.sections = sections
@@ -37,11 +35,10 @@ let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment> { state, actio
 
     case let .loadItemData(sections):
         state.isSectionLoading = true
-        return environment.homeService.sectionItemsPublisher(sections: sections)
-            .replaceError(with: [:])
-            .receive(on: DispatchQueue.main) // TODO: use injected q
-            .map { HomeAction.setSections(sections: $0) }
-            .eraseToEffect()
+        return Task {
+            guard let sectionData = try? await environment.homeService.sectionItems(sections: sections) else { return nil }
+            return HomeAction.setSections(sections: sectionData)
+        }
     }
     return .none
 }

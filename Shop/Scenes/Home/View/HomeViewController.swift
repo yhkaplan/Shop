@@ -10,6 +10,7 @@ import Combine
 import ComposableArchitecture
 import UIKit
 
+@MainActor
 final class HomeViewController: UIViewController {
     private lazy var collectionView: UICollectionView = {
         let c = UICollectionView(frame: view.bounds, collectionViewLayout: makeCollectionViewLayout())
@@ -71,9 +72,9 @@ final class HomeViewController: UIViewController {
     private let apiClient = APIClient()
     private var cancellables = Set<AnyCancellable>()
 
-    init(store: Store<HomeState, HomeAction>) {
+    init(store: Store<HomeState, HomeAction, HomeEnvironment>) {
         self.store = store
-        viewStore = ViewStore(store.scope(state: { $0.view }, action: HomeAction.view))
+        viewStore = ViewStore(store.scope(state: { $0.view }, action: HomeAction.view, env: { $0 }))
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -82,8 +83,8 @@ final class HomeViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private let store: Store<HomeState, HomeAction>
-    private let viewStore: ViewStore<ViewState, ViewAction>
+    private let store: Store<HomeState, HomeAction, HomeEnvironment>
+    private let viewStore: ViewStore<ViewState, ViewAction, HomeEnvironment>
 
     private func updateSections(_ sections: [Section: [Item]]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
@@ -100,21 +101,21 @@ final class HomeViewController: UIViewController {
 
         navigationItem.title = "Awesome Shop"
 
-        viewStore.publisher.isActivityIndicatorHidden
+        viewStore.isActivityIndicatorHidden
             .sink { [weak self] isHidden in
                 if isHidden {
                     self?.refreshControl.endRefreshing()
                 }
             }.store(in: &cancellables)
 
-        viewStore.publisher.productDetailScreenIsPresented
+        viewStore.productDetailScreenIsPresented
             .sink { [weak self] presentedState in
                 guard case let .presented(product) = presentedState else { return }
                 let productDetailView = ProductDetailView(product: product)
                 self?.navigationController?.pushView(productDetailView)
             }.store(in: &cancellables)
 
-        viewStore.publisher.sections
+        viewStore.sections
             .sink { [weak self] unsortedSections in self?.updateSections(unsortedSections) }
             .store(in: &cancellables)
 
@@ -218,7 +219,6 @@ final class HomeViewController: UIViewController {
     }
 }
 
-// TODO: make separate DelegateAdaptor class conform and use closure or combine-based API
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewStore.send(.didTapCell(section: indexPath.section, item: indexPath.item))
