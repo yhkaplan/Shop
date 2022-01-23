@@ -20,11 +20,3 @@ let appReducer: Reducer<AppState, AppAction, AppEnv> = homeReducer.pullback(
     toGlobalAction: { AppAction.homeViewController($0!) },
     environment: { $0.home}
 )
-
-//.combine(
-//    homeReducer.pullback(
-//        state: \AppState.homeState,
-//        action: /AppAction.homeViewController,
-//        environment: { $0.home }
-//    )
-//)
