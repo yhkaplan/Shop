@@ -20,8 +20,6 @@ struct Reducer<State, Action, Env>{
         reduce(&state, action, env)
     }
 
-    // could use pullback method like TCA
-    // https://github.com/pointfreeco/swift-composable-architecture/blob/main/Sources/ComposableArchitecture/Reducer.swift#L274-L288
     func pullback<GlobalState, GlobalAction, GlobalEnv>(
         state toLocalState: WritableKeyPath<GlobalState, State>,
         toLocalAction: @escaping (GlobalAction) -> Action,
