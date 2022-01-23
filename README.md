@@ -6,24 +6,20 @@ Shop is an example e-commerce app with a modern architecture and view layout imp
 - A highly dynamic and backend-driven home screen that's almost entirely customizable through the server
 - Migration piecemeal from UIKit to SwiftUI
 - A variety of architectures common to iOS apps with a particular focus on SwiftUI-friendly ones
-- Testing with Combine and SwiftUI
 - Dynamic type and other accessibility features
-- Localization and formatters
 
 ## Starting the example server
 
 I made a simple Node.js app to run on localhost so the app can use actual network requests. Follow the instructions below to get it running on your environment.
 
 ```sh
-$ sudo vim /etc/hosts
-# Add this: 127.0.0.1	localhost
 $ npm install # Install npm and node if not installed
 $ node app.js
 ```
 
 ## Architectures
 
-Though by no means fully correct or complete, here are the commits where I tried out a bunch of common architectures before settling on The Composable Architecture (TCA).
+Though by no means fully correct or complete, here are the commits where I tried out a bunch of common architectures before settling on a custom Redux-like architecture strongly inspired by The Composable Architecture (TCA).
 
 - [MVVM](https://github.com/yhkaplan/Shop/tree/5d423ff86c49df825b81f03a96c4ec4e44a25047)
 - [Redux](https://github.com/yhkaplan/Shop/tree/37311931bfa1f3ae02484a4f73ff1d7146c7e2aa)
